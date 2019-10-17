@@ -6,7 +6,7 @@ let router = express.Router();
 router.post('/', multer({
     dest: __dirname + "/../uploads"
 }).single("upload"), function (req, res, next) {
-    console.log(req.file.path);
+    res.set('Content-Type', 'text/plain');
     res.write('success');
     res.end();
 });
