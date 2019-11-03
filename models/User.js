@@ -16,15 +16,7 @@ let userSchema = new mongoose.Schema({
 });
 
 userSchema.statics.register = async function (email, password) {
-    password = await new Promise((resolve, reject) => {
-        bcrypt.hash(password, 12, (err, hash) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(hash);
-            }
-        });
-    });
+    password = await bcrypt.hash(password, 12);
 
     let user = new User({
         email: email,
@@ -34,6 +26,20 @@ userSchema.statics.register = async function (email, password) {
     return user.save();
 };
 
-User = mongoose.model('User', userSchema);
+userSchema.statics.validate = async function (email, password) {
+    let user = await User.findOne({
+        email: email,
+    }, 'password');
 
-module.exports = User;
+    if (!user) {
+        return null;
+    }
+
+    if (await bcrypt.compare(password, user.password)) {
+        return user;
+    } else {
+        return null;
+    }
+};
+
+module.exports = User = mongoose.model('User', userSchema);
