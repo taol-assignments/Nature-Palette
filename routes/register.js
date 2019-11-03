@@ -13,8 +13,15 @@ router.post('/', function (req, res, next) {
         console.error(e);
         throw e;
     }
-
+    res.json({code:1});
     res.status(201).end();
 });
+
+router.get('/', function(req, res, next){
+    res.render('register', {
+        title: "Register - Nature's Palette"
+    });
+});
+
 
 module.exports = router;
