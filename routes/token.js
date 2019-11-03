@@ -20,4 +20,10 @@ router.post('/', async function (req, res, next) {
     next();
 });
 
+router.get('/', function(req, res, next){
+    res.render('login', {
+        title: "Login - Nature's Palette"
+    });
+});
+
 module.exports = router;
