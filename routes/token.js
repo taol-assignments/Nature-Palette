@@ -41,6 +41,7 @@ router.delete('/', async function (req, res) {
         await Token.delete(req.cookie.token);
     }
 
+    res.clearCookie('token');
     res.status(204);
 });
 
