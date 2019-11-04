@@ -48,7 +48,9 @@ app.use(function (err, req, res, next) {
 
     let contentType = req.headers['content-type'];
 
-    if (!contentType || contentType.indexOf('application/json') !== -1) {
+    console.error(err);
+
+    if (contentType && contentType.indexOf('application/json') !== -1) {
         return res.json({
             msg: "Internal server error."
         });

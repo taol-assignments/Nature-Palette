@@ -21,9 +21,7 @@ router.post('/', async function (req, res, next) {
 });
 
 router.get('/', function(req, res, next){
-    res.render('login', {
-        title: "Login - Nature's Palette"
-    });
+    res.render('login');
 });
 
 module.exports = router;

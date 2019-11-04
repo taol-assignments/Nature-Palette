@@ -38,9 +38,7 @@ router.post('/', multer({
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-    res.render('upload', {
-        title: "Nature's Palette"
-    })
+    res.render('upload');
 });
 
 module.exports = router;
