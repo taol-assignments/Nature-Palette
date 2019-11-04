@@ -21,7 +21,7 @@
         </div>
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="success" style="visibility:hidden">
             <strong>Success!</strong> You are a registered user now, you can login.
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="toHomepage()">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -49,6 +49,10 @@
         } catch (error) {
             console.error('Error:', error);
         }
+    }
+
+    function toHomepage() {
+        location.href = '/'
     }
 </script>
 
