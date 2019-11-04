@@ -29,7 +29,7 @@ userSchema.statics.register = async function (email, password) {
 userSchema.statics.validate = async function (email, password) {
     let user = await User.findOne({
         email: email,
-    }, 'password');
+    });
 
     if (!user) {
         return null;

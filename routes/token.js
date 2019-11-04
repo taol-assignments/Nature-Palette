@@ -10,6 +10,16 @@ router.post('/', async function (req, res, next) {
     if (user) {
         let token = await Token.create(user);
 
+        token = token.toObject();
+        delete token._id;
+        delete token.__v;
+        delete token.userId;
+
+        token.user = user.toObject();
+        delete token.user._id;
+        delete token.user.__v;
+        delete token.user.password;
+
         res.status(201).json(token);
     } else {
         res.status(403).json({
