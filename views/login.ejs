@@ -19,7 +19,7 @@
             <label for="exampleInputPassword1">Password</label>
             <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
         </div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="success" style="visibility:hidden">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="failure" style="visibility:hidden">
             <strong>failure!</strong> Invalid email address or password
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -44,9 +44,10 @@
             console.log('Success:', JSON.stringify(json));
             if(response.status === 201) {
                 window.localStorage.setItem('token', JSON.stringify(json))
+                location.href = '/'
             }else if(response.status === 403) {
                 $('.alert').alert()
-                document.getElementById("success").style.visibility = "visible"
+                document.getElementById("failure").style.visibility = "visible"
             }
         } catch (error) {
             console.error('Error:', error);
