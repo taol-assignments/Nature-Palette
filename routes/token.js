@@ -37,12 +37,12 @@ router.get('/', function(req, res){
 });
 
 router.delete('/', async function (req, res) {
-    if (req.cookie.token) {
-        await Token.delete(req.cookie.token);
+    if (req.cookies.token) {
+        await Token.delete(req.cookies.token);
     }
 
     res.clearCookie('token');
-    res.status(204);
+    res.status(204).end();
 });
 
 module.exports = router;
