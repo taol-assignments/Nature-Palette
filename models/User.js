@@ -1,5 +1,8 @@
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
+
+const UserGroup = require('./UserGroup');
 
 let User;
 
@@ -12,6 +15,11 @@ let userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    userGroup: {
+        type: ObjectId,
+        ref: 'UserGroup',
+        required: true
     }
 });
 
@@ -20,7 +28,8 @@ userSchema.statics.register = async function (email, password) {
 
     let user = new User({
         email: email,
-        password: password
+        password: password,
+        userGroup: (await UserGroup.findOne({name: "Researchers"}))._id
     });
 
     return user.save();
@@ -29,7 +38,7 @@ userSchema.statics.register = async function (email, password) {
 userSchema.statics.validate = async function (email, password) {
     let user = await User.findOne({
         email: email,
-    });
+    }).populate('userGroup');
 
     if (!user) {
         return null;

@@ -22,7 +22,7 @@ let tokenSchema = new mongoose.Schema({
             return new Date(Date.now() + 86400 * 14 * 1000);
         }
     },
-    userId: {
+    user: {
         type: ObjectId,
         ref: 'User',
         required: true
@@ -46,7 +46,7 @@ tokenSchema.statics.create = async function (user) {
         try {
             let token = new Token({
                 nonce: nonce,
-                userId: user._id
+                user: user._id
             });
 
             return await token.save();
