@@ -13,21 +13,23 @@ router.post('/', async function (req, res, next) {
         token = token.toObject();
         delete token._id;
         delete token.__v;
-        delete token.userId;
+        delete token.user;
 
         token.user = user.toObject();
         delete token.user._id;
         delete token.user.__v;
         delete token.user.password;
 
-        res.status(201).json(token);
+        res.cookie('token', token.nonce, {
+            expires: token.expireAt,
+            httpOnly: true
+        }).status(201).json(token);
+
     } else {
         res.status(403).json({
             msg: "Invalid user name or password."
         })
     }
-
-    next();
 });
 
 router.get('/', function(req, res, next){

@@ -9,6 +9,9 @@ require('mongoose').connect('mongodb://localhost/Palette', {
     useUnifiedTopology: true
 });
 
+const auth = require('./middlewares/auth');
+const render = require('./middlewares/render');
+
 const indexRouter = require('./routes/index');
 const uploadRouter = require('./routes/upload');
 const fileListRouter = require('./routes/fileList');
@@ -26,6 +29,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(auth.tokenParser);
+
+app.use(render);
 
 app.use('/', indexRouter);
 app.use('/upload.html', uploadRouter);

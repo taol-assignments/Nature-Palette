@@ -1,43 +1,42 @@
 const User = require('../models/User');
 const Token = require('../models/Token');
 
-exports.ensureTokenValid = async function (req, res, next) {
-    let authHeader = req.headers.authorization;
+exports.tokenParser = async function (req, res, next) {
+    req.user = null;
 
-    if (!authHeader) {
-        res.status(400).json({
-            msg: "Missing token field."
-        });
-
-        res.end();
-        return;
+    if (!req.cookies || !req.cookies.token) {
+        return next();
     }
 
-    let split = authHeader.split(' ');
-
-    if (split[0] !== 'Bearer') {
-        res.status(400).json({
-            msg: "Invalid HTTP Authorization header."
-        });
-
-        res.end();
-        return;
-    }
-
-    let token = await Token.validate(split[1]);
-    let user;
+    let token = await Token.validate(req.cookies.token);
 
     if (token !== null) {
-        req.user = user = await User.findById(token.userId);
+        req.user = await User.findById(token.user).populate('userGroup');
     }
 
-    if (token === null || user === null) {
-        res.status(403).json({
-            msg: "Invalid access token"
-        });
+    next();
+};
 
-        res.end();
-    } else {
+exports.ensureUserPrivilege = function (...privileges) {
+    return async function (req, res, next) {
+        if (!req.user) {
+            res.status(403).json({
+                msg: "Access denied."
+            }).end();
+
+            return;
+        }
+
+        for (let p of privileges) {
+            if (!req.user.userGroup[p]) {
+                res.status(403).json({
+                    msg: "Access denied."
+                }).end();
+            }
+
+            return;
+        }
+
         next();
     }
 };

@@ -8,12 +8,20 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/upload.html">Upload</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/token.html">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/register.html">Register</a>
-                </li>
+
+                <% if (user) {%>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/token.html">Logout</a>
+                    </li>
+                <%} else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/token.html">Login</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register.html">Register</a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </nav>
