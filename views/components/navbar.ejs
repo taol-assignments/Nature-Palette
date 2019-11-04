@@ -1,5 +1,10 @@
-<header>
-    <nav class="navbar navbar-expand-lg wnavbar-dark bg-dark">
+<header style="width: 50%; margin: auto">
+    <ul class="head justify-content-end" style="width: 100%">
+        <div>
+            <h1 style="font-family: 'Book Antiqua'; text-align: right; margin-right: 5%">NATURE'S PALETTE</h1>
+        </div>
+    </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
@@ -11,8 +16,25 @@
 
                 <% if (user) {%>
                     <li class="nav-item">
-                        <a class="nav-link" href="/token.html">Logout</a>
+                        <a id="logout-btn" class="nav-link" href="#">Logout</a>
                     </li>
+                    <script defer>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            document.getElementById('logout-btn').addEventListener('click', async e => {
+                                e.preventDefault();
+
+                                await fetch('/token.html', {
+                                    method: 'DELETE'
+                                });
+
+                                if (window.location.href.pathname === '/') {
+                                    window.location.reload();
+                                } else {
+                                    window.location.href = '/';
+                                }
+                            });
+                        })
+                    </script>
                 <%} else { %>
                     <li class="nav-item">
                         <a class="nav-link" href="/token.html">Login</a>
@@ -22,10 +44,20 @@
                         <a class="nav-link" href="/register.html">Register</a>
                     </li>
                 <% } %>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">About</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Help</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <% if (user) {%>
+                    <li class="nav-item">
+                        <a class="nav-link">Hello! <%= user.email %></a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </nav>
 </header>
-<script>
-
-</script>

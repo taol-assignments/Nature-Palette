@@ -7,7 +7,7 @@
 
 <%- include('components/navbar.ejs', {user: user}) %>
 
-<div class="container">
+<!-- <div class="container">
     <div class="py-5 text-center">
         <img
             class="d-block mx-auto mb-4"
@@ -30,8 +30,25 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
+<div class="card" style="width:50%; margin: auto">
+    <img src="/images/BIRD.jpg" class="card-img-top" alt="...">
+    <div class="btn-group-vertical"role="toolbar" aria-label="Toolbar with button groups" style = "width:20%; right:2%; position:absolute">
+        <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button style ="padding: 10%; font-family: 'Book Antiqua'; font-size: 30px; background-color: black" type="button" class="btn btn-secondary">SEARCH</button>
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="Second group">
+            <button style ="padding: 10%; font-family: 'Book Antiqua'; font-size: 30px; background-color: dimgrey" type="button" class="btn btn-secondary">JOIN</button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Third group">
+            <button style ="padding: 10%; font-family: 'Book Antiqua'; font-size: 30px; background-color: lightslategrey" type="button" class="btn btn-secondary">UPLOAD DATA</button>
+        </div>
+    </div>
+    <footer style="background: #3C3837">
+        <p style= "color: white; text-align: center">Presented by: Group 7</p>
+    </footer>
+</div>
 <%- include components/scripts.ejs %>
 
 </body>
