@@ -32,8 +32,16 @@ router.post('/', async function (req, res, next) {
     }
 });
 
-router.get('/', function(req, res, next){
+router.get('/', function(req, res){
     res.render('login');
+});
+
+router.delete('/', async function (req, res) {
+    if (req.cookie.token) {
+        await Token.delete(req.cookie.token);
+    }
+
+    res.status(204);
 });
 
 module.exports = router;

@@ -60,18 +60,25 @@ tokenSchema.statics.create = async function (user) {
 };
 
 tokenSchema.statics.validate = async function(nonce) {
-    let token = await Token.findOne({nonce: nonce});
-
-    if (token) {
-        if (token.expireAt < Date.now()) {
-            await token.remove();
-            return null;
+    await Token.deleteMany({
+        expireAt: {
+            $lte: Date.now()
         }
+    });
 
-        return token;
-    } else {
-        return null;
-    }
+    return Token.findOne({nonce: nonce});
+};
+
+tokenSchema.statics.delete = async function(nonce) {
+    await Token.deleteMany({
+        $or: [{
+            nonce: nonce
+        }, {
+            expireAt: {
+                $lte: Date.now()
+            }
+        }]
+    });
 };
 
 module.exports = Token = mongoose.model('Token', tokenSchema);
