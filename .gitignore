@@ -100,3 +100,5 @@ typings/
 .tern-port
 
 .idea
+
+config.js

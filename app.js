@@ -3,11 +3,13 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const config = require('./config');
 
-require('mongoose').connect('mongodb://localhost/Palette', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
+require('mongoose').connect(
+    `mongodb://${config.mongoDB.host}:${config.mongoDB.port}/${config.mongoDB.database}`, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
 
 const auth = require('./middlewares/auth');
 const render = require('./middlewares/render');
