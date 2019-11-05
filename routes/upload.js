@@ -41,4 +41,12 @@ router.get('/', function (req, res, next) {
     res.render('upload');
 });
 
+router.get('/instruction', function (req, res, next) {
+    res.render('uploadInstruction');
+});
+
+router.get('/submission', function (req, res, next) {
+    res.render('uploadSubmission');
+});
+
 module.exports = router;

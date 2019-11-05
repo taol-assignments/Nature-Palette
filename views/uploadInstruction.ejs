@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('components/header.ejs', {title:'Upload - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('components/navbar.ejs', {user: user}) %>
+<div class="container" style="width: 50%;margin: auto">
+    <div class="card" style="text-align: center">
+    <div class="jumbotron">
+        <h5 class="font-weight-bold mb-3">Submission Instruction: Welcome to Nature's Platte!</h5>
+        <p class="lead">You have probably already edited blogs or social media sites. You have made edits that improved existing articles and now
+            you want to start a new article from scratch. Now, if you have not done any Wikipedia editing, you cannot directly make a new article
+            in mainspace. This permission is only for autoconfirmed users, which means those whose accounts are more than four days old and who have
+            done at least ten edits. Non-confirmed users and non-registered users can submit a proposed article through the Articles for Creation
+            process, where it will eventually be reviewed and considered for publication.</p>
+        <hr class="font-weight-bold mb-3">
+     <!--<div class="form-check">
+            <input class="form-check-input" type="checkbox" value="">
+            <label class="form-check-label" for="defaultCheck1">
+                I agree
+            </label>
+        </div>-->
+        <p class="font-weight-bold mb-3" style="text-align: center">If you agree with this submission instruction, you can press this button to start.</p>
+        <a class="btn btn-secondary btn-lg" href="/upload.html/submission" role="button">start</a>
+    </div>
+    <div class="card-body" style="background:rgba(0,0,0,0.13);color:rgba(0,0,0,0.98);font-family: 'Microsoft YaHei UI'">
+        <h5 class="font-weight-bold mb-3">Template for Reflectance met data</h5>
+        <button type="button" class="btn btn-link"><a href="">Field</a></button>
+        <button type="button" class="btn btn-link"><a href="">Museum</a></button>
+    </div>
+    <div class="card-body" style="background:rgba(0,0,0,0.25);color:black;font-family: 'Microsoft YaHei UI'">
+        <h5 class="font-weight-bold mb-3" style="text-align: center">Template for Transmittance met data</h5>
+        <button type="button" class="btn btn-link"><a href="">Field</a></button>
+        <button type="button" class="btn btn-link"><a href="">Museum</a></button>
+    </div>
+    <div class="card-body" style="background:rgba(0,0,0,0.44);color:rgb(0,0,0);font-family: 'Microsoft YaHei UI'">
+        <h5 class="font-weight-bold mb-3">Template for irradiace met data</h5>
+        <button type="button" class="btn btn-link"><a href="">Field</a></button>
+    </div>
+    </div>
+</div>
+
+<!--<div class="container">
+    <div class="py-5 text-center">
+        <form method="post" action="/register.html" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="exampleFormControlFile1">Upload</label>
+                <input type="file" name="upload" class="form-control-file" id="exampleFormControlFile1">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="description-input">Description</label>
+                    </div>
+                    <input id="description-input" class="form-control" type="text" name="description">
+                </div>
+            </div>
+            <input type="submit">
+        </form>
+
+        <h5>Uploaded files</h5>
+
+        <table id="file-list" class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">File Name</th>
+                <th scope="col">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', async () => {
+        let res = await fetch('/fileList.json');
+        res = await res.json();
+
+        let tbody = document.querySelector('#file-list>tbody');
+
+        res.forEach((row, i) => {
+            let tr = document.createElement('tr');
+
+            let rowNum =  document.createElement('td');
+            let filename = document.createElement('td');
+            let description = document.createElement('td');
+
+            rowNum.innerText = i + 1;
+            filename.innerText = row.filename;
+            description.innerText = row.description;
+
+            tr.appendChild(rowNum);
+            tr.appendChild(filename);
+            tr.appendChild(description);
+
+            tbody.appendChild(tr);
+        });
+    });
+</script> -->
+
+<%- include components/scripts.ejs %>
+
+</body>
+</html>
