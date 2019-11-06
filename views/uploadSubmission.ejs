@@ -1,13 +1,99 @@
 <!DOCTYPE html>
 <html>
 
-<%- include('components/header.ejs', {title:'Upload - Nature\'s Palette'}) %>
+<%- include('components/header.ejs', {
+    title:'Upload - Nature\'s Palette',
+    stylesheets: 'uploadSubmission'
+}) %>
 
 <body class="bg-light">
 
 <%- include('components/navbar.ejs', {user: user}) %>
 <div class="container" style="width: 50%;margin: auto">
-sunbmission
+    <br>
+    <form action="" enctype="multipart/form-data">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="prePage" data-toggle="pill" href="#basicInfo" role="tab" aria-selected="true">1. Basic Information</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="nextPage" data-toggle="pill" href="#uploadFile" role="tab" aria-selected="false">2. Upload File</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="basicInfo" role="tabpanel">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Name</label>
+                            <input type="text" name="firstName" class="form-control" placeholder="First name">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>&nbsp;&nbsp;</label>
+                            <input type="text" name="lastName" class="form-control" placeholder="Last name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Institution Affiliation</label>
+                            <input type="text" name="Institution" class="form-control" placeholder="Institution">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Type of Data</label>
+                            <select name="datatype" class="form-control">
+                                <option selected>Transmittance</option>
+                                <option>Reflectance</option>
+                                <option>Irradiance</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Data from</label>
+                            <select name="dataFrom" class="form-control">
+                                <option selected>Field</option>
+                                <option>Museum</option>
+                            </select>
+                        </div>
+
+                    </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <p>Choose datatype from the list - Transmittance, Reflectance, Irradiance</p>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <p>Data was collected from Field or Museum</p>
+                    </div>
+                </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="gridCheck">
+                            <label class="form-check-label" for="gridCheck">
+                                Check me out
+                            </label>
+                        </div>
+                    </div>
+                <button type="button" class="btn btn-secondary" onclick="nextPage()">Next</button>
+            </div>
+            <div class="tab-pane fade" id="uploadFile" role="tabpanel">
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Upload</label>
+                    <input type="file" name="upload" class="form-control-file" id="exampleFormControlFile1">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="description-input">Description</label>
+                        </div>
+                        <input id="description-input" class="form-control" type="text" name="description">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="prePage()">Back</button>
+                <button type="submit" class="btn btn-dark">Submit</button>
+            </div>
+    </div>
+    </form>
 </div>
 
 <!--<div class="container">
@@ -69,6 +155,18 @@ sunbmission
         });
     });
 </script> -->
+<script>
+    function nextPage() {
+        let element = window.document.getElementById('nextPage');
+        element.setAttribute('aria-selected', 'true');
+        element.click();
+    }
+    function prePage() {
+        let element = window.document.getElementById('prePage');
+        element.setAttribute('aria-selected', 'true');
+        element.click();
+    }
+</script>
 
 <%- include components/scripts.ejs %>
 
