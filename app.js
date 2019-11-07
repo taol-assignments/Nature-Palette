@@ -39,7 +39,7 @@ app.use(auth.tokenParser);
 app.use(render);
 
 app.use('/', indexRouter);
-app.use('/upload.html', uploadRouter);
+app.use('/upload', uploadRouter);
 app.use('/fileList.json', fileListRouter);
 app.use('/register.html', registerRouter);
 app.use('/token.html', tokenRouter);
