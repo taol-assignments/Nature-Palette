@@ -19,6 +19,8 @@ const uploadRouter = require('./routes/upload');
 const fileListRouter = require('./routes/fileList');
 const registerRouter = require('./routes/register');
 const tokenRouter = require('./routes/token');
+const aboutRouter = require('./routes/about');
+const helpRouter = require('./routes/help');
 
 let app = express();
 
@@ -43,6 +45,8 @@ app.use('/upload', uploadRouter);
 app.use('/fileList.json', fileListRouter);
 app.use('/register.html', registerRouter);
 app.use('/token.html', tokenRouter);
+app.use('/about.html', aboutRouter);
+app.use('/help.html', helpRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('components/header.ejs', {title:'About us - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('components/navbar.ejs', {user: user}) %>
+<div class="container" style="width: 50% ;margin: auto">
+    <div class="card" style="text-align: center">
+    <div class="jumbotron">
+        <h5 class="font-weight-bold mb-3">ABOUT</h5>
+        <p class="lead"><b>Nature's Palette:  An open-access digital repository of spectral dat</b></p>
+        <p class="lead", style="text-align: left">The roles of light environment, colouration, and colour vision have been
+            fundamental questions in animal ecology for the last several decades. More
+            recently, researchers have also taken interest in how anthropogenic disturbances in
+            light environments may influence the behaviour and welfare of wild animals.
+            Deforestation and agricultural practices, for example, can change the transmission
+            properties of streams and lakes through soil particulate release, and influence the
+            mating behaviour of fish, and city smog could affect visual communication in birds.
+            The realization that visual perceptions (e.g., colours) are sensory experiences that
+            differ among species, has further highlighted the need for an objective
+            quantification of light and the energy reflected at different wavelengths (spectral
+            measurements). Over the last 20 years, the rising popularity of portable
+            spectrometers has made objective quantification of the spectral properties of light,
+            and animal/plant commonplace.
+            The research projects that require the quantification of colours typically require
+            thousands of spectral measurements. These usually come from ambient natural or
+            artificial light sources (irradiance), transmittance properties of the medium (air,
+            water), and reflective properties of animal integuments and the substrates in their
+            environment. Reflective properties can be acquired directly from the wild or from
+            museum specimens. We estimate that comparative studies in birds, for example,
+            have characterized the plumage colours for over 40% of described species (4000+
+            taxa). Yet, a survey demonstrates that less than 5% of these data are publicly
+            available to other researchers. Furthermore, the datasets that are available through
+            repositories are not curated in a way that makes them searchable and/or do not
+            provide the metadata that would easily allow their inclusion in other studies. As a
+            consequence, the opportunities for large scale studies are limited, and substantial
+            resources (time and money) are wasted on duplicating data for different research
+            projects.</p>
+        <p class="lead", style="text-align: left"><b>What is Nature's Palette?</b></p>
+        <p class="lead", style="text-align: left">Nature's Palette is a tool that: <br> • allows researchers to easily supply their
+            spectral data without going through onerous data processing, a major barrier
+            to data sharing, <br>
+            • develop a pilot online repository of spectral data with advanced search
+            functions, <br>
+            • and initiate the development of database services that would be unique to
+            spectral data</p>
+        <hr class="font-weight-bold mb-3">
+    </div>
+    </div>
+</div>
+<footer style="background: #3C3837;width: 50%; margin: auto">
+    <p style= "color: white; text-align: center;font-size: large;">Group 7 contributors: Shuaishuai Li, Jingyao Li, Tao Liu, Aiur Nanzatov</p>
+</footer>
+<%- include components/scripts.ejs %>
+
+</body>
+</html>
