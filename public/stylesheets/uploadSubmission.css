@@ -1,0 +1,11 @@
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: rgba(32, 98, 154, 0.77);
+    background-color: transparent;
+    font-weight: bold;
+}
+.nav-link:link{
+    color: #424242;
+}
+form label {
+    font-weight: bolder
+}
