@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('components/header.ejs', {title:'Help page - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('components/navbar.ejs', {user: user}) %>
+<div class="container" style="width: 50% ;margin: auto">
+    <div class="card" style="text-align: center">
+        <div class="jumbotron">
+            <h5 class="font-weight-bold mb-3">NEED HELP?</h5>
+            <p class="lead">You can contact us by email:
+                <a href="aznanzatov@mun.ca">aznanzatov@mun.ca</a>
+                or
+                <a href="taol@mun.ca">taol@mun.ca</a>
+            </p>
+
+            <hr class="font-weight-bold mb-3">
+        </div>
+    </div>
+</div>
+<footer style="background: #3C3837;width: 50%; margin: auto">
+    <p style= "color: white; text-align: center;font-size: large;">Group 7. 2019. St. John's, NL</p>
+</footer>
+<%- include components/scripts.ejs %>
+
+</body>
+</html>

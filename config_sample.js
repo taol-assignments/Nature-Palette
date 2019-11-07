@@ -1,6 +1,8 @@
 module.exports = {
     host: 'localhost',
 
+    rLanguageExecutable: 'Rscript',
+
     mongoDB: {
         host: 'localhost',
         port: 27017,
