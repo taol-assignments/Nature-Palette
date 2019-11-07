@@ -11,8 +11,8 @@
 <%- include('components/navbar.ejs', {user: user}) %>
 <div class="container" style="width: 50%;margin: auto">
     <br>
-    <form action="" enctype="multipart/form-data">
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style="border-bottom: #00B7FF">
+    <form action="/upload.html" method="post" enctype="multipart/form-data">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
             <a class="nav-link active" id="prePage" data-toggle="pill" href="#basicInfo" role="tab" aria-selected="true">1. Basic Information</a>
         </li>
@@ -40,7 +40,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label>Institution Affiliation</label>
-                            <input type="text" name="Institution" class="form-control" placeholder="Institution">
+                            <input type="text" name="institution" class="form-control" placeholder="Institution">
                         </div>
                     </div>
                     <div class="form-row">
@@ -116,9 +116,9 @@
                     </label>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <input type="file" class="custom-file-input" name="uploadMetadata">
-                        <label class="custom-file-label">Choose file</label>
+                    <div class="form-group col-md-7">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01" name="uploadMetadata">
+                            <label class="custom-file-label">Choose file</label>
                     </div>
                 </div>
                 <div class="form-row">
@@ -128,7 +128,7 @@
                     </label>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-md-7">
                             <input type="file" class="custom-file-input" name="uploadRawFile">
                             <label class="custom-file-label">Choose file</label>
                     </div>
@@ -140,40 +140,7 @@
     </form>
 </div>
 
-<!--<div class="container">
-    <div class="py-5 text-center">
-        <form method="post" action="/register.html" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="exampleFormControlFile1">Upload</label>
-                <input type="file" name="upload" class="form-control-file" id="exampleFormControlFile1">
-
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="description-input">Description</label>
-                    </div>
-                    <input id="description-input" class="form-control" type="text" name="description">
-                </div>
-            </div>
-            <input type="submit">
-        </form>
-
-        <h5>Uploaded files</h5>
-
-        <table id="file-list" class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">File Name</th>
-                <th scope="col">Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<script>
+<!--<script>
     window.addEventListener('DOMContentLoaded', async () => {
         let res = await fetch('/fileList.json');
         res = await res.json();
@@ -212,6 +179,10 @@
         element.setAttribute('aria-selected', 'true');
         element.click();
     }
+    $(".custom-file-input").on("change", function() {
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
 </script>
 </body>
 </html>

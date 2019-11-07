@@ -4,10 +4,39 @@ const multer = require('multer');
 
 let router = express.Router();
 
-router.post('/', multer({
-    dest: __dirname + "/../uploads"
-}).single("upload"), function (req, res, next) {
-    fs.readFile(__dirname + '/../fileList.json', (err, buf) => {
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, __dirname + "/../uploads/" + file.fieldname)
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname)
+    }
+});
+let upload = multer({storage: storage});
+let cpUpload = upload.fields([{ name: 'uploadMetadata', maxCount: 1 }, { name: 'uploadRawFile', maxCount: 1 }]);
+
+router.post('/', cpUpload, function (req, res, next) {
+    let paraList = req.body;
+    let firstName = paraList.firstName;
+    let lastName = paraList.lastName;
+    let email = paraList.email;
+    let institution = paraList.institution;
+    let dataType = paraList.datatype;
+    let dataFrom = paraList.dataFrom;
+    let published = paraList.published;
+    let date = paraList.date;
+    let embarGo = paraList.embargo;
+    let metadataFile = req.files['uploadMetadata'][0];
+    let rawFile = req.files['uploadRawFile'][0];
+    let metadataName = metadataFile.originalname;
+    let rawName = rawFile.originalname;
+    console.log("firstName:" + firstName + "lastName:" + lastName + "email:" + email);
+    console.log("institution:" + institution + "dataType:" + dataType + "dataFrom:" + dataFrom);
+    console.log("published:" + published);
+    console.log("embargo:" + embarGo + "date:" + date);
+    console.log("embarGo:" + embarGo);
+    console.log("metadataName:" + metadataName + "rawName:" + rawName);
+    /* fs.readFile(__dirname + '/../fileList.json', (err, buf) => {
         let list;
 
         if (err) {
@@ -33,7 +62,7 @@ router.post('/', multer({
             res.redirect('/upload.html');
             res.end();
         })
-    });
+    });*/
 });
 
 /* GET users listing. */
