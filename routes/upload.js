@@ -1,6 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const multer = require('multer');
+const AdmZip = require('adm-zip');
 
 let router = express.Router();
 
@@ -16,6 +17,12 @@ let upload = multer({storage: storage});
 let cpUpload = upload.fields([{ name: 'uploadMetadata', maxCount: 1 }, { name: 'uploadRawFile', maxCount: 1 }]);
 
 router.post('/', cpUpload, function (req, res, next) {
+
+    let rawFile = req.files['uploadRawFile'][0];
+    let zip = new AdmZip(rawFile.path);
+    // extracts everything
+    zip.extractAllTo(__dirname + "/../uploads/extractedFile", true);
+
     let paraList = req.body;
     let firstName = paraList.firstName;
     let lastName = paraList.lastName;
@@ -27,7 +34,6 @@ router.post('/', cpUpload, function (req, res, next) {
     let date = paraList.date;
     let embarGo = paraList.embargo;
     let metadataFile = req.files['uploadMetadata'][0];
-    let rawFile = req.files['uploadRawFile'][0];
     let metadataName = metadataFile.originalname;
     let rawName = rawFile.originalname;
     console.log("firstName:" + firstName + "lastName:" + lastName + "email:" + email);
