@@ -8,7 +8,7 @@
 <%- include('components/navbar.ejs', {user: user}) %>
 
 <div class="container" style="width:50%; margin: auto">
-    <form method="post">
+    <form id="register-form" method="post">
         <br><br><br>
         <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
@@ -29,40 +29,50 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
-        <button type="submit" id="register-submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary">Register</button>
+
+        <div class="g-recaptcha"
+             data-size="invisible"
+             data-callback="doSubmit"
+             data-sitekey="<%- config.recaptcha.siteKey%>"></div>
+    </form>
     </form>
 </div>
 
+<%- include components/scripts.ejs %>
+
 <script src="https://www.google.com/recaptcha/api.js?onload=onReCAPTCHALoaded" async defer></script>
 <script>
-    function onReCAPTCHALoaded() {
-        grecaptcha.render('register-submit', {
-            size: 'invisivle',
-            sitekey: '<%- config.recaptcha.siteKey %>',
-            callback: async (token) => {
-                const url = '/register.html';
-                const params = new URLSearchParams([...new FormData(document.forms[0]).entries()]);
-                console.log(params);
-                try {
-                    const response = await fetch(url, {
-                        method: 'POST', // or 'PUT'
-                        body: params
-                    });
-                    const json = await response.json();
-                    console.log('Success:', JSON.stringify(json));
-                    if(json.code === 1) {
-                        $('.alert').alert()
-                        document.getElementById("success").style.visibility = "visible"
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
+    document.getElementById('register-form').onsubmit = function (e) {
+        e.preventDefault();
+        grecaptcha.execute();
+    }
+
+    async function doSubmit(token) {
+        const url = '/register.html';
+        const params = new URLSearchParams([...new FormData(document.forms[0]).entries()]);
+        console.log(params);
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                body: params,
+                headers: {
+                    'X-reCAPTCHA-Token': token
                 }
+            });
+            const json = await response.json();
+
+            if(json.code === 1) {
+                $('.alert').alert()
+                document.getElementById("success").style.visibility = "visible"
             }
-        });
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            grecaptcha.reset();
+        }
     }
 </script>
-
-<%- include components/scripts.ejs %>
 
 </body>
 </html>
