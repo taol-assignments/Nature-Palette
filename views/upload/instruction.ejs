@@ -8,13 +8,11 @@
 <%- include('../components/navbar.ejs', {user: user}) %>
 <div class="container" style="width: 50%;margin: auto">
     <div class="card" style="text-align: center">
-    <div class="jumbotron">
+    <div class="jumbotron" style="padding-left: 15%;padding-right: 15%">
         <h5 class="font-weight-bold mb-3">Submission Instruction: Welcome to Nature's Palette!</h5>
-        <p class="lead">You have probably already edited blogs or social media sites. You have made edits that improved existing articles and now
-            you want to start a new article from scratch. Now, if you have not done any Wikipedia editing, you cannot directly make a new article
-            in mainspace. This permission is only for autoconfirmed users, which means those whose accounts are more than four days old and who have
-            done at least ten edits. Non-confirmed users and non-registered users can submit a proposed article through the Articles for Creation
-            process, where it will eventually be reviewed and considered for publication.</p>
+        <p class="lead" style="text-align: left;font-size: medium;font-family: 'Microsoft YaHei UI'">
+            1. Click the following links to download templates and corresponding README files that you want. Different templates represents different darwin cores and metadata fields, README files will give you instructions about how to fill in templates.<br>2. After filling in templates, you will be asked to input basic information (mostly Dublin core) related to the submission.<br>3.Finally, you need to upload both the metadata file that you just filled in and the raw file(.zip format), then you can submit.
+        </p>
         <hr class="font-weight-bold mb-3">
      <!--<div class="form-check">
             <input class="form-check-input" type="checkbox" value="">
@@ -26,19 +24,19 @@
         <a class="btn btn-secondary btn-lg" href="/upload/submission.html" role="button">START</a>
     </div>
     <div class="card-body" style="background:rgba(0,0,0,0.13);color:rgba(0,0,0,0.98);font-family: 'Microsoft YaHei UI'">
-        <h5 class="font-weight-bold mb-3">Template for Reflectance met data</h5>
+        <h5 class="font-weight-bold mb-3">Template for Reflectance metadata</h5>
         <button type="button" class="btn btn-link"><a href="/templates/FieldReflectance.csv">Field</a></button>
         <button type="button" class="btn btn-link"><a href="/templates/MuseumReflectance.csv">Museum</a></button> <br>
         <button type="button" class="btn btn-link"><a href="/templates/Field Reflectance README.txt" download>README on Field Reflectance</a></button>
         <button type="button" class="btn btn-link"><a href="/templates/Museum Reflectance README.txt" download>README on Museum Reflectance</a></button>
     </div>
     <div class="card-body" style="background:rgba(0,0,0,0.25);color:black;font-family: 'Microsoft YaHei UI'">
-        <h5 class="font-weight-bold mb-3" style="text-align: center">Template for Transmittance met data</h5>
+        <h5 class="font-weight-bold mb-3" style="text-align: center">Template for Transmittance metadata</h5>
         <button type="button" class="btn btn-link"><a href="">Field</a></button>
         <button type="button" class="btn btn-link"><a href="">Museum</a></button>
     </div>
     <div class="card-body" style="background:rgba(0,0,0,0.44);color:rgb(0,0,0);font-family: 'Microsoft YaHei UI'">
-        <h5 class="font-weight-bold mb-3">Template for irradiace met data</h5>
+        <h5 class="font-weight-bold mb-3">Template for irradiace metadata</h5>
         <button type="button" class="btn btn-link"><a href="">Field</a></button>
     </div>
     </div>
