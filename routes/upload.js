@@ -17,7 +17,7 @@ const Metric = require('../models/Metric');
 
 let router = express.Router();
 
-router.post('/', auth.ensureUserPrivilege('uploadFiles'), function (req, res, next) {
+router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, res, next) {
     req.submission = new Submission({
         user: req.user._id
     });
