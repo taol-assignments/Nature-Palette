@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 
-<%- include('components/header.ejs', {
+<%- include('../components/header.ejs', {
     title:'Upload - Nature\'s Palette',
     stylesheets: 'uploadSubmission'
 }) %>
 
 <body class="bg-light">
 
-<%- include('components/navbar.ejs', {user: user}) %>
+<%- include('../components/navbar.ejs', {user: user}) %>
 <div class="container" style="width: 50%;margin: auto">
     <br>
     <form action="/upload" method="post" enctype="multipart/form-data">
@@ -74,13 +74,13 @@
                         <label>Have the data been published?</label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" name="published" value="true" data-toggle="collapse" href="#publishInfo" role="button" aria-expanded="true" aria-controls="publishInfo" checked>
+                        <input class="form-check-input" type="radio" name="isPublished" value="true" data-toggle="collapse" href="#publishInfo" role="button" aria-expanded="true" aria-controls="publishInfo" checked>
                         <label class="form-check-label">
                             Yes
                         </label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" name="published" value="false" data-toggle="collapse" href="#publishInfo" role="button">
+                        <input class="form-check-input" type="radio" name="isPublished" value="false" data-toggle="collapse" href="#publishInfo" role="button">
                         <label class="form-check-label">
                             No
                         </label>
@@ -88,7 +88,7 @@
                 </div>
                 <div class="form-row collapse show multi-collapse" id="publishInfo">
                     <div class="form-group col-md-5">
-                        <input type="text" class="form-control" name="reference" placeholder="reference">
+                        <input type="text" class="form-control" name="reference" placeholder="Reference">
                     </div>
                     <div class="form-group col-md-5">
                         <input type="text" class="form-control" name="DOI" placeholder="DOI">
@@ -99,19 +99,19 @@
                         <label>Embargo?</label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" id="embargoYes" name="embargo" value="true" data-toggle="collapse" href="#date" role="button" aria-expanded="true" aria-controls="date" checked>
+                        <input class="form-check-input" type="radio" id="embargoYes" name="isEmbargo" value="true" data-toggle="collapse" href="#date" role="button" aria-expanded="true" aria-controls="date" checked>
                         <label class="form-check-label">
                             Yes
                         </label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" id="embargoNo" name="embargo" value="false" data-toggle="collapse" href="#date" role="button">
+                        <input class="form-check-input" type="radio" id="embargoNo" name="isEmbargo" value="false" data-toggle="collapse" href="#date" role="button">
                         <label class="form-check-label">
                             No
                         </label>
                     </div>
                     <div class="form-group col-md-6 collapse show multi-collapse" id="date">
-                        <input type="date" class="date" min="<%=moment().format('YYYY-MM-DD')%>" max="<%=moment().add(1, 'year').format('YYYY-MM-DD')%>" name="date"/>
+                        <input type="date" class="date" min="<%=moment().format('YYYY-MM-DD')%>" max="<%=moment().add(1, 'year').format('YYYY-MM-DD')%>" name="availableAt"/>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="nextPage()">Next</button>
@@ -125,7 +125,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-7">
-                            <input type="file" class="custom-file-input" id="inputGroupFile01" name="uploadMetadata">
+                            <input type="file" class="custom-file-input" id="inputGroupFile01" name="metadata">
                             <label class="custom-file-label">Choose file</label>
                     </div>
                 </div>
@@ -137,7 +137,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-7">
-                            <input type="file" class="custom-file-input" name="uploadRawFile">
+                            <input type="file" class="custom-file-input" name="rawFile">
                             <label class="custom-file-label">Choose file</label>
                     </div>
                 </div>
@@ -148,34 +148,8 @@
     </form>
 </div>
 
-<!--<script>
-    window.addEventListener('DOMContentLoaded', async () => {
-        let res = await fetch('/fileList.json');
-        res = await res.json();
+<%- include ../components/scripts.ejs %>
 
-        let tbody = document.querySelector('#file-list>tbody');
-
-        res.forEach((row, i) => {
-            let tr = document.createElement('tr');
-
-            let rowNum =  document.createElement('td');
-            let filename = document.createElement('td');
-            let description = document.createElement('td');
-
-            rowNum.innerText = i + 1;
-            filename.innerText = row.filename;
-            description.innerText = row.description;
-
-            tr.appendChild(rowNum);
-            tr.appendChild(filename);
-            tr.appendChild(description);
-
-            tbody.appendChild(tr);
-        });
-    });
-</script> -->
-
-<%- include components/scripts.ejs %>
 <script>
     function nextPage() {
         let element = window.document.getElementById('nextPage');
