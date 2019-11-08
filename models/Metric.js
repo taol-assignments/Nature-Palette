@@ -1,8 +1,14 @@
 const {spawn} = require('child_process');
 const mongoose = require('mongoose');
 const config = require('../config');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 let metricSchema = new mongoose.Schema({
+    Submission: {
+        type: ObjectId,
+        ref: 'Submission',
+        require: true
+    },
     Filename: {
         type: String,
         require: true
@@ -103,7 +109,7 @@ let metricSchema = new mongoose.Schema({
 
 let Metric;
 
-metricSchema.statics.fromRawFile = async function(dir) {
+metricSchema.statics.fromRawFile = async function(submission, dir) {
     let childProcess = spawn(config.rLanguageExecutable, [
         '--vanilla',
         __dirname + '/../lib/MetricCalculation.R',
@@ -133,7 +139,9 @@ metricSchema.statics.fromRawFile = async function(dir) {
 
     let metrics = [];
     for (let i = 0; i < table.H5.length; i++) {
-        let m = {};
+        let m = {
+            submission: submission
+        };
         for (let k in table) {
             m[k] = table[k][i];
         }

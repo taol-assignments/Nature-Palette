@@ -1,4 +1,5 @@
-const crypto = require('crypto');
+const util = require('util');
+const randomBytes = util.promisify(require('crypto').randomBytes);
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -33,15 +34,7 @@ tokenSchema.statics.create = async function (user) {
     let nonce;
 
     do {
-        nonce = await new Promise((resolve, reject) => {
-            crypto.randomBytes(256, (err, buffer) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(buffer.toString('hex'));
-                }
-            })
-        });
+        nonce = (await randomBytes(256)).toString('hex');
 
         try {
             let token = new Token({

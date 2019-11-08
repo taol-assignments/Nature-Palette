@@ -2,8 +2,8 @@
 <html>
 
 <%- include('../components/header.ejs', {
-    title:'Upload - Nature\'s Palette',
-    stylesheets: 'uploadSubmission'
+title:'Upload - Nature\'s Palette',
+stylesheets: 'uploadSubmission'
 }) %>
 
 <body class="bg-light">
@@ -12,57 +12,59 @@
 <div class="container" style="width: 50%;margin: auto">
     <br>
     <form action="/upload" class="was-validated" method="post" enctype="multipart/form-data">
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="prePage" data-toggle="pill" href="#basicInfo" role="tab" aria-selected="true">1. Basic Information</a>
-        </li>
-        &nbsp;<img src="/images/keyboard_arrow_right-24px.svg">&nbsp;
-        <li class="nav-item">
-            <a class="nav-link" id="nextPage" data-toggle="pill" href="#uploadFile" role="tab" aria-selected="false">2. Upload File</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="prePage" data-toggle="pill" href="#basicInfo" role="tab"
+                   aria-selected="true">1. Basic Information</a>
+            </li>
+            &nbsp;<img src="/images/keyboard_arrow_right-24px.svg">&nbsp;
+            <li class="nav-item">
+                <a class="nav-link" id="nextPage" data-toggle="pill" href="#uploadFile" role="tab"
+                   aria-selected="false">2. Upload File</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane fade show active" id="basicInfo" role="tabpanel">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Name</label>
-                            <input type="text" name="firstName" class="form-control" placeholder="First name" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>&nbsp;&nbsp;</label>
-                            <input type="text" name="lastName" class="form-control" placeholder="Last name" required>
-                        </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Name</label>
+                        <input type="text" name="firstName" class="form-control" placeholder="First name" required>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="Email" required>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Institution Affiliation</label>
-                            <input type="text" name="institution" class="form-control" placeholder="Institution">
-                        </div>
+                    <div class="form-group col-md-6">
+                        <label>&nbsp;&nbsp;</label>
+                        <input type="text" name="lastName" class="form-control" placeholder="Last name" required>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>Type of Data</label>
-                            <select name="datatype" class="custom-select" required>
-                                <option value="">Open this select menu</option>
-                                <option>Transmittance</option>
-                                <option>Reflectance</option>
-                                <option>Irradiance</option>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Data from</label>
-                            <select name="dataFrom" class="custom-select" required>
-                                <option value="">Open this select menu</option>
-                                <option>Field</option>
-                                <option>Museum</option>
-                            </select>
-                        </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Institution Affiliation</label>
+                        <input type="text" name="institution" class="form-control" placeholder="Institution">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Type of Data</label>
+                        <select name="datatype" class="custom-select" required>
+                            <option value="">Open this select menu</option>
+                            <option>Transmittance</option>
+                            <option>Reflectance</option>
+                            <option>Irradiance</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label>Data from</label>
+                        <select name="dataFrom" class="custom-select" required>
+                            <option value="">Open this select menu</option>
+                            <option>Field</option>
+                            <option>Museum</option>
+                        </select>
+                    </div>
 
-                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <p>Choose datatype from the list - Transmittance, Reflectance, Irradiance</p>
@@ -76,13 +78,16 @@
                         <label>Have the data been published?</label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" name="isPublished" value="true" data-toggle="collapse" href="#publishInfo" role="button" aria-expanded="true" aria-controls="publishInfo" checked>
+                        <input class="form-check-input" type="radio" name="isPublished" value="true"
+                               data-toggle="collapse" href="#publishInfo" role="button" aria-expanded="true"
+                               aria-controls="publishInfo" checked>
                         <label class="form-check-label">
                             Yes
                         </label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" name="isPublished" value="false" data-toggle="collapse" href="#publishInfo" role="button">
+                        <input class="form-check-input" type="radio" name="isPublished" value="false"
+                               data-toggle="collapse" href="#publishInfo" role="button">
                         <label class="form-check-label">
                             No
                         </label>
@@ -90,7 +95,8 @@
                 </div>
                 <div class="form-row collapse show multi-collapse" id="publishInfo">
                     <div class="form-group col-md-5">
-                        <input type="text" class="form-control" id="reference" name="reference" placeholder="Reference" required>
+                        <input type="text" class="form-control" id="reference" name="reference" placeholder="Reference"
+                               required>
                     </div>
                     <div class="form-group col-md-5">
                         <input type="text" class="form-control" id="DOI" name="DOI" placeholder="DOI" required>
@@ -101,13 +107,16 @@
                         <label>Embargo?</label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" id="embargoYes" name="isEmbargo" value="true" data-toggle="collapse" href="#date" role="button" aria-expanded="true" aria-controls="date" checked>
+                        <input class="form-check-input" type="radio" id="embargoYes" name="isEmbargo" value="true"
+                               data-toggle="collapse" href="#date" role="button" aria-expanded="true"
+                               aria-controls="date" checked>
                         <label class="form-check-label">
                             Yes
                         </label>
                     </div>
                     <div class="form-group col-md-1">
-                        <input class="form-check-input" type="radio" id="embargoNo" name="isEmbargo" value="false" data-toggle="collapse" href="#date" role="button">
+                        <input class="form-check-input" type="radio" id="embargoNo" name="isEmbargo" value="false"
+                               data-toggle="collapse" href="#date" role="button">
                         <label class="form-check-label">
                             No
                         </label>
@@ -115,9 +124,9 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-4 collapse show multi-collapse" id="date">
-                        <input type="date" class="form-control" value="<%=moment().format('YYYY-MM-DD')%>" min="<%=moment().format('YYYY-MM-DD')%>" max="<%=moment().add(1, 'year').format('YYYY-MM-DD')%>" name="date" required/>
-                    <div class="form-group col-md-6 collapse show multi-collapse" id="date">
-                        <input type="date" class="date" min="<%=moment().format('YYYY-MM-DD')%>" max="<%=moment().add(1, 'year').format('YYYY-MM-DD')%>" name="availableAt"/>
+                        <input type="date" class="form-control" value="<%= moment().format('YYYY-MM-DD') %>"
+                               min="<%= moment().format('YYYY-MM-DD') %>"
+                               max="<%= moment().add(1, 'year').format('YYYY-MM-DD') %>" name="availableAt" required/>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="nextPage()">Next</button>
@@ -131,8 +140,8 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-7">
-                            <input type="file" class="custom-file-input" id="inputGroupFile01" name="metadata" required>
-                            <label class="custom-file-label">Choose file</label>
+                        <input type="file" class="custom-file-input" id="inputGroupFile01" name="metadata" required>
+                        <label class="custom-file-label">Choose file</label>
                     </div>
                 </div>
                 <div class="form-row">
@@ -143,14 +152,14 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-7">
-                            <input type="file" class="custom-file-input" name="rawFile" required>
-                            <label class="custom-file-label">Choose file</label>
+                        <input type="file" class="custom-file-input" name="rawFile" required>
+                        <label class="custom-file-label">Choose file</label>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" onclick="prePage()">Back</button>
                 <button type="submit" class="btn btn-dark">Submit</button>
             </div>
-    </div>
+        </div>
     </form>
 </div>
 
@@ -162,24 +171,25 @@
         element.setAttribute('aria-selected', 'true');
         element.click();
     }
+
     function prePage() {
         let element = window.document.getElementById('prePage');
         element.setAttribute('aria-selected', 'true');
         element.click();
     }
-    $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
+
+    $(".custom-file-input").on("change", function () {
+        let fileName = $(this).val().split("\\").pop();
         $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
     $(document).ready(function () {
 
-        $('input[type=radio][name=published]').change(function() {
+        $('input[type=radio][name=isPublished]').change(function () {
             if (this.value == 'true') {
                 $("#reference").val("")
                 $("#DOI").val("")
-            }
-            else if (this.value == 'false') {
+            } else if (this.value == 'false') {
                 $("#reference").val("reference")
                 $("#DOI").val("DOI")
             }

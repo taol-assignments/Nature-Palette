@@ -21,6 +21,8 @@ module.exports = function (req, res, next) {
                 config: config
             }, fn);
         }
+
+        return res;
     };
 
     next();

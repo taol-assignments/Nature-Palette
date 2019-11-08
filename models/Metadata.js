@@ -1,11 +1,17 @@
 const _ = require('lodash');
-const fs = require('fs');
 const peg = require('pegjs');
+const helpers = require('../lib/helpers');
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 let Metadata;
 
 let metadataSchema = new mongoose.Schema({
+    Submission: {
+        type: ObjectId,
+        ref: 'Submission',
+        require: true
+    },
     Comments: {
         type: String,
         require: false
@@ -190,7 +196,7 @@ const rowParser = peg.generate(
         allowedStartRules: ['rows']
     });
 
-metadataSchema.statics.parse = function (csv) {
+metadataSchema.statics.parse = function (submission, csv) {
     let end = csv.indexOf('\r\n');
     let offset = 2;
 
@@ -205,7 +211,7 @@ metadataSchema.statics.parse = function (csv) {
 
     let cols = fieldParser.parse(csv.substr(0, end));
 
-    let duplicates = _.filter(cols, (val, i, iteratee) => _.includes(iteratee, val, i + 1));
+    let duplicates = helpers.findDuplicates(cols);
     if (duplicates.length > 0) {
         throw new Error("Found duplicated columns: " + duplicates.join(', '));
     }
@@ -218,7 +224,10 @@ metadataSchema.statics.parse = function (csv) {
                 `Expect ${cols.length} columns per row.`);
         }
 
-        let doc = {};
+        let doc = {
+            submission: submission
+        };
+
         for (let i in row) {
             doc[cols[i]] = row[i];
         }

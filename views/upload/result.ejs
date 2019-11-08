@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('../components/header.ejs', {
+    title:'Upload ' + (err ? 'Success' : 'Failed') + ' - Nature\'s Palette'
+}) %>
+
+<body class="bg-light">
+
+<%- include('../components/navbar.ejs', {user: user}) %>
+
+<div class="container">
+    <div class="card" style="text-align: center">
+        <div class="jumbotron" style="padding-left: 15%;padding-right: 15%">
+            <% if (err) { %>
+                <p class="lead">
+                    An error happened during the upload:
+                </p>
+                <p class="lead">
+                    <%- err.message %>
+                </p>
+            <% } else { %>
+                <p class="lead">
+                    Congratulation! You have uploaded the files successfully!
+                </p>
+                <p class="lead">
+                    You will be advised if we find corrupted files.
+                </p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include ../components/scripts.ejs %>
+</body>
+
+</html>
