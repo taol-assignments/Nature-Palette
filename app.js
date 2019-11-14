@@ -16,7 +16,6 @@ const render = require('./middlewares/render');
 
 const indexRouter = require('./routes/index');
 const uploadRouter = require('./routes/upload');
-const fileListRouter = require('./routes/fileList');
 const registerRouter = require('./routes/register');
 const tokenRouter = require('./routes/token');
 const aboutRouter = require('./routes/about');
@@ -42,7 +41,6 @@ app.use(render);
 
 app.use('/', indexRouter);
 app.use('/upload', uploadRouter);
-app.use('/fileList.json', fileListRouter);
 app.use('/register.html', registerRouter);
 app.use('/token.html', tokenRouter);
 app.use('/about.html', aboutRouter);
