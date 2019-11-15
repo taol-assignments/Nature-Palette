@@ -140,7 +140,7 @@ metricSchema.statics.fromRawFile = async function(submission, dir) {
     let metrics = [];
     for (let i = 0; i < table.H5.length; i++) {
         let m = {
-            submission: submission
+            Submission: submission
         };
         for (let k in table) {
             m[k] = table[k][i];
