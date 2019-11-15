@@ -34,6 +34,7 @@ let metadataSchema = new mongoose.Schema({
     },
     Patch: {
         type: String,
+        index: true,
         require: true
     },
     ProbeAngle1: {
@@ -62,20 +63,24 @@ let metadataSchema = new mongoose.Schema({
     },
     catalogueNumber: {
         type: String,
+        index: true,
         require: function () {
             return typeof this.UniqueID === 'undefined';
         }
     },
     class: {
         type: String,
+        index: true,
         require: false
     },
     collectionCode: {
         type: String,
+        index: true,
         require: false,
     },
     country: {
         type: String,
+        index: true,
         enum: require('../countryList'),
         require: false
     },
@@ -97,10 +102,12 @@ let metadataSchema = new mongoose.Schema({
     },
     family: {
         type: String,
+        index: 'type',
         require: false
     },
     genus: {
         type: String,
+        index: true,
         require: true
     },
     geodeticDatum: {
@@ -112,16 +119,19 @@ let metadataSchema = new mongoose.Schema({
     },
     infraspecificEpithet: {
         type: String,
+        index: true,
         require: false
     },
     institutionCode: {
         type: String,
+        index: true,
         require: function () {
             return typeof this.UniqueID === 'undefined';
         }
     },
     lifeStage: {
         type: String,
+        index: true,
         require: false
     },
     locality: {
@@ -134,14 +144,17 @@ let metadataSchema = new mongoose.Schema({
     },
     order: {
         type: String,
+        index: true,
         require: false
     },
     sex: {
         type: String,
+        index: true,
         require: false
     },
     specificEpithet: {
         type: String,
+        index: true,
         require: true
     },
     verbatimElevation: {
@@ -225,7 +238,7 @@ metadataSchema.statics.parse = function (submission, csv) {
         }
 
         let doc = {
-            submission: submission
+            Submission: submission
         };
 
         for (let i in row) {
@@ -234,6 +247,84 @@ metadataSchema.statics.parse = function (submission, csv) {
 
         return new Metadata(doc);
     });
+};
+
+const embargoSelector = [{
+    $lookup: {
+        from: "submissions",
+        localField: "Submission",
+        foreignField: "_id",
+        as: "Submission"
+    }
+}, {
+    $unwind: "$Submission"
+}, {
+    $match: {
+        $or: [{
+            'Submission.availableAt': {
+                $lte: new Date()
+            }
+        }, {
+            'Submission.isEmbargo': false
+        }]
+    }
+}];
+
+metadataSchema.statics.search = async function (query) {
+    return Metadata.aggregate([{
+        $match: query
+    }, ...embargoSelector, {
+        $group: {
+            _id: {
+                genus: '$genus',
+                specificEpithet: '$specificEpithet',
+                infraspecificEpithet: '$infraspecificEpithet',
+                sex: '$sex',
+                lifeStage: '$lifeStage',
+                Patch: '$Patch',
+            }
+        }
+    }, {
+        $replaceWith: "$_id"
+    }]);
+};
+
+metadataSchema.statics.findPublicRows = async function (query) {
+    return Metadata.aggregate([{
+        $match: query
+    }, ...embargoSelector, {
+        $set: {
+            "Submission": "$Submission._id"
+        }
+    }]);
+};
+
+metadataSchema.statics.findRawFiles = async function (query) {
+    return Metadata.aggregate([{
+        $match: query
+    }, ...embargoSelector, {
+        $project: {
+            _id: "$Submission._id",
+            FileName: "$FileName"
+        }
+    }]);
+};
+
+metadataSchema.statics.findSubmissions = async function (query) {
+    return Metadata.aggregate([{
+        $match:query
+    }, ...embargoSelector, {
+        $replaceWith: '$Submission'
+    }, {
+        $group: {
+            _id: "$_id",
+            doc: {
+                $first:"$$ROOT"
+            }
+        }
+    }, {
+        $replaceWith: '$doc'
+    }]);
 };
 
 module.exports = Metadata = mongoose.model('Metadata', metadataSchema);
