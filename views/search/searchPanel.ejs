@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../components/header.ejs', {title:'Home - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('../components/navbar.ejs', {user: user}) %>
+
+<div class="container" style="width:70%; margin: auto">
+    <br/>
+    <form>
+    <div class="input-group mb-3">
+        <input type="text" id="search-terms" class="form-control" placeholder="name:value name:value......" aria-label="name:value name:value......" aria-describedby="button-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">
+                <a>Search</a>
+            </button>
+        </div>
+    </div>
+    </form>
+
+    <form>
+        <div class="form-row">
+            <% if (searchTerms) {
+                for (let i = 0; i < searchTerms.length; i++) {
+            %>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" placeholder="<%=searchTerms[i].name %>">
+                        </div>
+                <% } %>
+            <% } %>
+        </div>
+    </form>
+
+    <div>
+        <h5>Refine search by</h5>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item"><a class="btn btn-light">GeoReferencing</a></li>
+        <li class="list-group-item"><a class="btn btn-light">Color Space</a></li>
+    </ul>
+    </div>
+
+
+
+</div>
+
+<script>
+    var elems = [document.getElementsByTagName('input')];
+
+    var data = {
+        value: 'hello!'
+    };
+
+    var command = {
+        text: function(str){
+            this.innerHTML = str;
+        },
+        value: function(str){
+            this.setAttribute('value', str);
+        }
+    };
+
+    var scan = function(){
+        /**
+         * 扫描带指令的节点属性
+         */
+        for(let i = 0, len = elems.length; i < len; i++){
+            let elem = elems[i];
+            elem.command = [];
+            for(let j = 0, len1 = elem.attributes.length; j < len1; j++){
+                var attr = elem.attributes[j];
+                if(attr.nodeName.indexOf('q-') >= 0){
+                    /**
+                     * 调用属性指令，这里可以使用数据改变检测
+                     */
+                    command[attr.nodeName.slice(2)].call(elem, data[attr.nodeValue]);
+                    elem.command.push(attr.nodeName.slice(2));
+                }
+            }
+        }
+    }
+
+    /**
+     * 设置数据后扫描
+     */
+    function mvSet(key, value){
+        data[key] = value;
+        scan();
+    }
+    /**
+     * 数据绑定监听
+     */
+    elems[1].addEventListener('keyup', function(e){
+        mvSet('value', e.target.value);
+    }, false);
+
+    scan();
+
+    /**
+     * 改变数据更新视图
+     */
+    setTimeout(function(){
+        mvSet('value', 'fuck');
+    },1000)
+
+</script>
+
+<%- include ../components/scripts.ejs %>
+
+</body>
+</html>

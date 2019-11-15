@@ -20,6 +20,7 @@ const registerRouter = require('./routes/register');
 const tokenRouter = require('./routes/token');
 const aboutRouter = require('./routes/about');
 const helpRouter = require('./routes/help');
+const searchRouter = require('./routes/search');
 
 let app = express();
 
@@ -45,6 +46,7 @@ app.use('/register.html', registerRouter);
 app.use('/token.html', tokenRouter);
 app.use('/about.html', aboutRouter);
 app.use('/help.html', helpRouter);
+app.use('/search', searchRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
