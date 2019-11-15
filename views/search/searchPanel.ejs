@@ -50,7 +50,7 @@
         </ul>
     </div>
 
-    <% if (result) { %>
+    <% if (result && result.length > 0) { %>
         <h5>Search Results</h5>
         <table class="table table-striped">
             <thead>
@@ -88,6 +88,8 @@
                 });
             })
         </script>
+    <% } else if (result) { %>
+        <h5>Your search did not match any results.</h5>
     <% } %>
 </div>
 
