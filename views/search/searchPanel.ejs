@@ -9,42 +9,109 @@
 
 <div class="container" style="width:70%; margin: auto">
     <br/>
-    <form>
-    <div class="input-group mb-3">
-        <input type="text" id="search-terms" class="form-control" placeholder="name:value name:value......" aria-label="name:value name:value......" aria-describedby="button-addon2">
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">
-                <a>Search</a>
-            </button>
+    <form id="search-form" action="/search/searchPanel.html" method="GET">
+        <div class="input-group mb-3">
+            <input type="text"
+                   id="search-terms"
+                   class="form-control"
+                   placeholder="name:value name:value......"
+                   aria-label="name:value name:value......"
+                   aria-describedby="search-btn">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="search-btn">
+                    Search
+                </button>
+            </div>
         </div>
-    </div>
-    </form>
 
-    <form>
         <div class="form-row">
             <% if (searchTerms) {
-                for (let i = 0; i < searchTerms.length; i++) {
+                    for (let term of searchTerms) {
             %>
-                        <div class="form-group col-md-4">
-                            <input type="text" class="form-control" placeholder="<%=searchTerms[i].name %>">
-                        </div>
-                <% } %>
+                <div class="form-group col-md-4">
+                    <input type="text"
+                           class="form-control"
+                           <%if (query && query[term.name]) {%>
+                                value="<%=query[term.name]%>"
+                           <%}%>
+                           name="<%= term.name %>"
+                           placeholder="<%= term.name %>">
+                </div>
+            <% } %>
             <% } %>
         </div>
     </form>
 
     <div>
         <h5>Refine search by</h5>
-    <ul class="list-group list-group-horizontal">
-        <li class="list-group-item"><a class="btn btn-light">GeoReferencing</a></li>
-        <li class="list-group-item"><a class="btn btn-light">Color Space</a></li>
-    </ul>
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item"><a class="btn btn-light">GeoReferencing</a></li>
+            <li class="list-group-item"><a class="btn btn-light">Color Space</a></li>
+        </ul>
     </div>
 
-
-
+    <% if (result && result.length > 0) { %>
+        <h5>Search Results</h5>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Genus</th>
+                <th scope="col">Specific Epithet</th>
+                <th scope="col">Infraspecific Epithet</th>
+                <th scope="col">Sex</th>
+                <th scope="col">Life State</th>
+                <th scope="col">Patch</th>
+            </tr>
+            </thead>
+            <tbody>
+                <% result.forEach((row, i) => { %>
+                <tr>
+                    <th scope="row"><%= i + 1 %></th>
+                    <td><%= row.genus %></td>
+                    <td><%= row.specificEpithet %></td>
+                    <td><%= row.infraspecificEpithet %></td>
+                    <td><%= row.sex %></td>
+                    <td><%= row.lifeStage %></td>
+                    <td><%= row.Patch %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <button class="btn btn-primary float-right" type="button" id="download-btn">
+            Download all
+        </button>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('download-btn').addEventListener('click', function () {
+                    window.location.href = '/search/download.html' + window.location.search
+                });
+            })
+        </script>
+    <% } else if (result) { %>
+        <h5>Your search did not match any results.</h5>
+    <% } %>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('search-btn').addEventListener('click', function (e) {
+            let params = {};
+
+            for (let input of Array.from(
+                document.querySelectorAll('#search-form input[name]:not([name=""])')
+            )) {
+                if (input.value.length > 0) {
+                    params[input.name] = input.value;
+                }
+            }
+
+            window.location.href = '/search/searchPanel.html?' + $.param(params);
+        });
+    });
+</script>
+
+<!--
 <script>
     var elems = [document.getElementsByTagName('input')];
 
@@ -105,6 +172,7 @@
     },1000)
 
 </script>
+-->
 
 <%- include ../components/scripts.ejs %>
 
