@@ -99,7 +99,8 @@ router.get('/download.html', searchTermsMiddleware, async function (req, res, ne
                 .update(JSON.stringify(req.query))
                 .digest('hex') + '.zip',
         'Content-Length': zipBuffer.length
-    }).end(zipBuffer);
+    });
+    res.end(zipBuffer);
 });
 
 module.exports = router;
