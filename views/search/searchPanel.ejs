@@ -65,8 +65,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
                 <% result.forEach((row, i) => { %>
+                <tr>
                     <th scope="row"><%= i + 1 %></th>
                     <td><%= row.genus %></td>
                     <td><%= row.specificEpithet %></td>
@@ -74,8 +74,8 @@
                     <td><%= row.sex %></td>
                     <td><%= row.lifeStage %></td>
                     <td><%= row.Patch %></td>
+                </tr>
                 <% }) %>
-            </tr>
             </tbody>
         </table>
         <button class="btn btn-primary float-right" type="button" id="download-btn">
