@@ -58,6 +58,13 @@ let submissionSchema = new mongoose.Schema({
         require: function () {
             return this.isEmbargo;
         }
+    },
+    createdAt: {
+        type: Date,
+        default: function() {
+            return Date.now();
+        },
+        require: true
     }
 });
 

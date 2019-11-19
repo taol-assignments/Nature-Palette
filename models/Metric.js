@@ -116,7 +116,7 @@ metricSchema.statics.fromRawFile = async function(submission, dir) {
         dir
     ]);
 
-    let table = JSON.parse(await new Promise((resolve, reject) => {
+    let result = JSON.parse(await new Promise((resolve, reject) => {
         let err = '';
         let json = '';
 
@@ -138,18 +138,22 @@ metricSchema.statics.fromRawFile = async function(submission, dir) {
     }));
 
     let metrics = [];
-    for (let i = 0; i < table.H5.length; i++) {
+    for (let i = 0; i < result.metrics.H5.length; i++) {
         let m = {
             Submission: submission
         };
-        for (let k in table) {
-            m[k] = table[k][i];
+        for (let k in result.metrics) {
+            m[k] = result.metrics[k][i];
         }
 
         metrics.push(new Metric(m));
     }
 
-    return metrics;
+    return {
+        metrics: metrics,
+        warnings: result.warnings,
+        errors: result.errors
+    };
 };
 
 module.exports = Metric = mongoose.model('Metric', metricSchema);

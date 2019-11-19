@@ -72,10 +72,16 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
 
     try {
         await Promise.all([
-            util.promisify((new AdmZip(rawFile.path)).extractAllToAsync)(extractTo, true).catch(e => {
-                let err = new Error('Failed to extract zip file.');
-                err.code = 500;
-                throw err;
+            new Promise((resolve, reject) => {
+                new AdmZip(rawFile.path).extractAllToAsync(extractTo, true, err => {
+                    if (err) {
+                        err = new Error(err);
+                        err.code = 400;
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
             }),
             util.promisify(readFile)(metadataFile.path).then(buf => {
                 metadata = Metadata.parse(req.submission, buf.toString());
@@ -85,8 +91,11 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
         console.error(e);
         cleanUploadedFiles();
 
+        if (!(e instanceof Error)) {
+            e = new Error(e);
+        }
+
         if (typeof e.code !== 'number') {
-            e = new Error('Internal server error.');
             e.code = 500;
         }
 
@@ -135,12 +144,27 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
         await Promise.all([
             req.submission.save(),
             Promise.all(metadata.map(row => row.save())),
-            Metric.fromRawFile(req.submission, rawFileDir).then(metrics => {
-                return Promise.all(metrics.map(m => m.save()));
+            Metric.fromRawFile(req.submission, rawFileDir).then(result => {
+                let text = `Dear ${req.submission.firstName} ${req.submission.lastName},\n`;
+
+                if (result.warnings.length >= 0 || result.errors.length >= 0) {
+                    text = 'There are ${result.warnings.length} warnings and ${result.errors.length} errors in' +
+                        'your raw files. Warnings and errors are showed in :\n';
+
+                } else {
+                    text = 'All of your uploaded files have been processed successfully.';
+                }
+
+                let args = {
+                    subject: 'Your raw file uploading result.',
+                };
+
+                return Promise.all(result.metrics.map(m => m.save()));
             })
         ]);
     } catch (e) {
         console.error(e);
+
     }
 });
 
