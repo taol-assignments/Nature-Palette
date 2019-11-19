@@ -77,11 +77,36 @@ router.get('/download.html', searchTermsMiddleware, async function (req, res, ne
                 zip.addFile("metadata.csv", Buffer.alloc(csv.length, csv));
             }),
             Metadata.findSubmissions(req.query).then(submissions => {
-                submissions = JSON.stringify(submissions, null, 4);
+                let rows = [];
+                let cols = [];
 
-                zip.addFile(
-                    "submissions.json",
-                    Buffer.alloc(submissions.length, submissions));
+                for (let s of submissions) {
+                    let row = [s._id.toString()];
+
+                    for (let k in s) {
+                        if (s.hasOwnProperty(k)) {
+                            if (cols.indexOf(k) === -1 && k !== '__v') {
+                                cols.push(k);
+                            }
+                        }
+                    }
+
+                    for (let col of cols) {
+                        if (s.hasOwnProperty(col)) {
+                            row.push(s[col].toString());
+                        } else {
+                            row.push('');
+                        }
+                    }
+
+                    rows.push(row.join(','));
+                }
+
+                cols = cols.map(c => c === '_id' ? 'SubmissionNumber' : c);
+                rows.unshift(cols.join(','));
+                let csv = rows.join('\n');
+
+                zip.addFile("submissions.csv", Buffer.alloc(csv.length, csv));
             })
         ]);
     } catch (e) {

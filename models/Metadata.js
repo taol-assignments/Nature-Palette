@@ -218,35 +218,41 @@ metadataSchema.statics.parse = function (submission, csv) {
         offset = 1;
     }
 
-    if (end === -1) {
-        throw new Error('Empty metadata file.');
-    }
-
-    let cols = fieldParser.parse(csv.substr(0, end));
-
-    let duplicates = helpers.findDuplicates(cols);
-    if (duplicates.length > 0) {
-        throw new Error("Found duplicated columns: " + duplicates.join(', '));
-    }
-
-    let content = rowParser.parse(csv.substr(end + offset));
-
-    return content.map(row => {
-        if (row.length !== cols.length) {
-            throw new Error(`Number of columns mismatched in row ${content.indexOf(row) + 1}.` +
-                `Expect ${cols.length} columns per row.`);
+    try {
+        if (end === -1) {
+            throw new Error('Empty metadata file.');
         }
 
-        let doc = {
-            Submission: submission
-        };
+        let cols = fieldParser.parse(csv.substr(0, end));
 
-        for (let i in row) {
-            doc[cols[i]] = row[i];
+        let duplicates = helpers.findDuplicates(cols);
+        if (duplicates.length > 0) {
+            throw new Error("Found duplicated columns: " + duplicates.join(', '));
         }
 
-        return new Metadata(doc);
-    });
+        let content = rowParser.parse(csv.substr(end + offset));
+
+        return content.map(row => {
+            if (row.length !== cols.length) {
+                throw new Error(`Number of columns mismatched in row ${content.indexOf(row) + 1}.` +
+                    `Expect ${cols.length} columns per row.`);
+            }
+
+            let doc = {
+                Submission: submission
+            };
+
+            for (let i in row) {
+                doc[cols[i]] = row[i];
+            }
+
+            return new Metadata(doc);
+        });
+    } catch (e) {
+        e.message = "Failed to parse metadata file: " + e.message;
+        e.code = 400;
+        throw e;
+    }
 };
 
 const embargoSelector = [{
@@ -312,14 +318,14 @@ metadataSchema.statics.findRawFiles = async function (query) {
 
 metadataSchema.statics.findSubmissions = async function (query) {
     return Metadata.aggregate([{
-        $match:query
+        $match: query
     }, ...embargoSelector, {
         $replaceWith: '$Submission'
     }, {
         $group: {
             _id: "$_id",
             doc: {
-                $first:"$$ROOT"
+                $first: "$$ROOT"
             }
         }
     }, {
