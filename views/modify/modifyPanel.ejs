@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../components/header.ejs', {title:'Home - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('../components/navbar.ejs', {user: user}) %>
+
+<div class="container" style="width:70%; margin: auto">
+    <br/>
+    <form id="search-form" action="/modify/modifyPanel.html" method="GET">
+        <div class="input-group mb-3">
+            <input type="text"
+                   id="search-terms"
+                   class="form-control"
+                   placeholder="name:value name:value......"
+                   aria-label="name:value name:value......"
+                   aria-describedby="search-btn">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button" id="search-btn">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<%- include ../components/scripts.ejs %>
+
+</body>
+</html>

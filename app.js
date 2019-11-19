@@ -22,6 +22,7 @@ const aboutRouter = require('./routes/about');
 const helpRouter = require('./routes/help');
 const searchRouter = require('./routes/search');
 const addTermRouter = require('./routes/addTerm');
+const modifyRouter = require('./routes/modify');
 
 let app = express();
 
@@ -49,6 +50,7 @@ app.use('/about.html', aboutRouter);
 app.use('/help.html', helpRouter);
 app.use('/search', searchRouter);
 app.use('/addTerm', addTermRouter);
+app.use('/modify', modifyRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
