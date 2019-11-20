@@ -46,7 +46,7 @@
                 <td><%=(submissions[i].firstName + " " + submissions[i].lastName) %></td>
                 <td><%=submissions[i].email %></td>
                 <td><%=submissions[i].dataFrom %></td>
-                <td><button type="button" class="btn btn-success">Modify</button></td>
+                <td><a href="/modify/<%=submissions[i]._id%>" type="button" class="btn btn-success">Modify</a></td>
             </tr>
         <% }
         } else { %>

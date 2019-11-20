@@ -11,4 +11,11 @@ router.get('/modifyPanel.html', async function (req, res) {
     });
 });
 
+router.get('/:id', async function (req, res) {
+    submissionId = req.params.id
+    res.render('modify/modifyFile', {
+        submissionId: submissionId
+    });
+})
+
 module.exports = router;

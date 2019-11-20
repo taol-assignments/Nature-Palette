@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../components/header.ejs', {title:'Home - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('../components/navbar.ejs', {user: user}) %>
+
+<div class="container" style="width:70%; margin: auto">
+    <br>
+    <form action="/upload" class="was-validated" method="post" enctype="multipart/form-data">
+        <div class="form-row">
+            <label>
+                Metadata File
+                <span>(Upload file that contains modification information and metadata for the raw files)</span>
+            </label>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-7">
+                <input type="file" class="custom-file-input" name="metadata" required>
+                <label class="custom-file-label">Choose file</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <label>
+                Raw Files
+                <span>(Upload raw files into a compressed format. Prefer for .zip)</span>
+            </label>
+        </div>
+        <div class="form-row">
+
+            <div class="form-group col-md-7">
+                <input type="file" class="custom-file-input" name="rawFile" required>
+                <label class="custom-file-label">Choose file</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+<%=submissionId %>
+</div>
+<%- include ../components/scripts.ejs %>
+
+</body>
+</html>
