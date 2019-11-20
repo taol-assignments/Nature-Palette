@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../components/header.ejs', {title:'Home - Nature\'s Palette'}) %>
+
+<body class="bg-light">
+
+<%- include('../components/navbar.ejs', {user: user}) %>
+
+<div class="container" style="width:70%; margin: auto">
+    <br/>
+    <!--<div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Data modification request</h4>
+        <p>To modify data submitted by you, please enter researcher's name.</p>
+    </div>
+    <form>
+        <div class="form-group">
+            <label for="exampleInputEmail1">First name</label>
+            <input class="form-control" type="text" placeholder="Enter first name">
+            <small id="emailHelp" class="form-text text-muted">Please, enter correct names in each form to ensure that you receive correct submissions</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Last name</label>
+            <input class="form-control" type="text" placeholder="Enter last name">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+
+    </form>-->
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Submission №</th>
+            <th scope="col">Submission ID</th>
+            <th scope="col">Submitter</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Data from</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% if (submissions && submissions.length > 0) {
+            for (let i = 0; i < submissions.length; i++) {
+        %>
+            <tr>
+                <th scope="row"><%=i %></th>
+                <td><%=submissions[i]._id %></td>
+                <td><%=(submissions[i].firstName + " " + submissions[i].lastName) %></td>
+                <td><%=submissions[i].email %></td>
+                <td><%=submissions[i].dataFrom %></td>
+                <td><button type="button" class="btn btn-success">Modify</button></td>
+            </tr>
+        <% }
+        } else { %>
+            <div class="alert alert-success" role="alert">
+                <p>No submission yet. Please go to homepage and start your submission!</p>
+            </div>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+
+
+<%- include ../components/scripts.ejs %>
+
+</body>
+</html>
