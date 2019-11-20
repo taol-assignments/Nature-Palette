@@ -9,7 +9,7 @@
 
 <div class="container" style="width:70%; margin: auto">
     <br/>
-    <div class="alert alert-success" role="alert">
+    <!--<div class="alert alert-success" role="alert">
         <h4 class="alert-heading">Data modification request</h4>
         <p>To modify data submitted by you, please enter researcher's name.</p>
     </div>
@@ -25,42 +25,35 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
 
-    </form>
-        <hr>
+    </form>-->
     <table class="table">
         <thead>
         <tr>
             <th scope="col">Submission №</th>
             <th scope="col">Submission ID</th>
-            <th scope="col">Embargo</th>
+            <th scope="col">Submitter</th>
             <th scope="col">E-mail</th>
+            <th scope="col">Data from</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td><button type="button" class="btn btn-success">Modify</button></td>
-
-
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-            <td><button type="button" class="btn btn-success">Modify</button></td>
-
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-            <td><button type="button" class="btn btn-success">Modify</button></td>
-        </tr>
+        <% if (submissions && submissions.length > 0) {
+            for (let i = 0; i < submissions.length; i++) {
+        %>
+            <tr>
+                <th scope="row"><%=i %></th>
+                <td><%=submissions[i]._id %></td>
+                <td><%=(submissions[i].firstName + " " + submissions[i].lastName) %></td>
+                <td><%=submissions[i].email %></td>
+                <td><%=submissions[i].dataFrom %></td>
+                <td><button type="button" class="btn btn-success">Modify</button></td>
+            </tr>
+        <% }
+        } else { %>
+            <div class="alert alert-success" role="alert">
+                <p>No submission yet. Please go to homepage and start your submission!</p>
+            </div>
+        <% } %>
         </tbody>
     </table>
 </div>
