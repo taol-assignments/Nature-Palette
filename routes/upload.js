@@ -9,6 +9,7 @@ const express = require('express');
 const multer = require('multer');
 const mkdirp = util.promisify(require('mkdirp'));
 const AdmZip = require('adm-zip');
+const sendMail = require('../lib/sendEmail');
 const auth = require('../middlewares/auth');
 const helpers = require('../lib/helpers');
 const Submission = require('../models/Submission');
@@ -140,32 +141,61 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
         err: null
     });
 
-    try {
-        await Promise.all([
-            req.submission.save(),
-            Promise.all(metadata.map(row => row.save())),
-            Metric.fromRawFile(req.submission, rawFileDir).then(result => {
-                let text = `Dear ${req.submission.firstName} ${req.submission.lastName},\n`;
+    function makeErrorTable(rows) {
+        return helpers.makeHtmlTable([
+            'File', 'Wave Length', 'Value'
+        ], rows.map(row => {
+            return [row.file, row.wavelen, row.value];
+        }));
+    }
 
-                if (result.warnings.length >= 0 || result.errors.length >= 0) {
-                    text = 'There are ${result.warnings.length} warnings and ${result.errors.length} errors in' +
-                        'your raw files. Warnings and errors are showed in :\n';
+    Promise.all([
+        req.submission.save(),
+        Promise.all(metadata.map(row => row.save())),
+        Metric.fromRawFile(req.submission, rawFileDir).then(result => {
+            let html = `Dear ${req.submission.firstName} ${req.submission.lastName},\n\n`;
 
-                } else {
-                    text = 'All of your uploaded files have been processed successfully.';
+            if (result.warnings.length > 0 || result.errors.length > 0) {
+                html += `We found ${result.warnings.length} small values and ${result.errors.length} large values in your raw files.\n\n`;
+
+                if (result.warnings.length > 0) {
+                    html += `${
+                        result.warnings.length
+                    } reflective values in range [-2, 0]:\n${
+                        makeErrorTable(result.warnings)
+                    }`;
                 }
 
-                let args = {
-                    subject: 'Your raw file uploading result.',
-                };
+                if (result.errors.length > 0) {
+                    html += `${
+                        result.errors.length
+                    } reflective value less than -2:\n${
+                        makeErrorTable(result.errors)
+                    }\n`
+                }
+            } else {
+                html += 'All of your uploaded files have been processed successfully.';
+            }
 
-                return Promise.all(result.metrics.map(m => m.save()));
-            })
-        ]);
-    } catch (e) {
+            html += '\nSincerely,\nNature\'s Palette';
+            html = html.replace(/\n/g, '<br>');
+
+            let args = {
+                to: 'taol@mun.ca',
+                from: 'test@example.com',
+                subject: 'Nature\'s Palette: Your raw file uploading result.',
+                content: [{
+                    type: 'text/html',
+                    value: html
+                }]
+            };
+
+            sendMail(args);
+            return Promise.all(result.metrics.map(m => m.save()));
+        })
+    ]).catch(e => {
         console.error(e);
-
-    }
+    })
 });
 
 router.get('/instruction.html', function (req, res, next) {

@@ -109,7 +109,7 @@ let metricSchema = new mongoose.Schema({
 
 let Metric;
 
-metricSchema.statics.fromRawFile = async function(submission, dir) {
+metricSchema.statics.fromRawFile = async function (submission, dir) {
     let childProcess = spawn(config.rLanguageExecutable, [
         '--vanilla',
         __dirname + '/../lib/MetricCalculation.R',
@@ -129,10 +129,14 @@ metricSchema.statics.fromRawFile = async function(submission, dir) {
         });
 
         childProcess.on('close', code => {
-            if (code === 0) {
+            if (code !== 0) {
+                console.warn(`Rscript process finished with exit code ${code}. stderr output: ${err}`);
+            }
+
+            try {
                 resolve(json.substr(json.indexOf('{')));
-            } else {
-                reject(new Error(`Rscript process finished with exit code ${code}. stderr output: ${err}`));
+            } catch (e) {
+                reject(e);
             }
         })
     }));

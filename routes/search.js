@@ -81,8 +81,6 @@ router.get('/download.html', searchTermsMiddleware, async function (req, res, ne
                 let cols = [];
 
                 for (let s of submissions) {
-                    let row = [s._id.toString()];
-
                     for (let k in s) {
                         if (s.hasOwnProperty(k)) {
                             if (cols.indexOf(k) === -1 && k !== '__v') {
@@ -90,10 +88,20 @@ router.get('/download.html', searchTermsMiddleware, async function (req, res, ne
                             }
                         }
                     }
+                }
+
+                for (let s of submissions) {
+                    let row = [];
 
                     for (let col of cols) {
                         if (s.hasOwnProperty(col)) {
-                            row.push(s[col].toString());
+                            if (col === 'user') {
+                                row.push(s.user.email);
+                            } else if (s[col] instanceof Date) {
+                                row.push(s[col].toISOString());
+                            } else {
+                                row.push(s[col].toString());
+                            }
                         } else {
                             row.push('');
                         }

@@ -243,7 +243,9 @@ metadataSchema.statics.parse = function (submission, csv) {
             };
 
             for (let i in row) {
-                doc[cols[i]] = row[i];
+                if (row[i]) {
+                    doc[cols[i]] = row[i];
+                }
             }
 
             return new Metadata(doc);
@@ -330,6 +332,15 @@ metadataSchema.statics.findSubmissions = async function (query) {
         }
     }, {
         $replaceWith: '$doc'
+    }, {
+        $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "user"
+        }
+    }, {
+        $unwind: '$user'
     }]);
 };
 

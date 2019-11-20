@@ -6,11 +6,13 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@sendgrid/mail": "^6.4.0",
     "adm-zip": "^0.4.13",
     "bcrypt": "^3.0.6",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
+    "escape-html": "^1.0.3",
     "express": "~4.16.1",
     "glob": "^7.1.6",
     "http-errors": "~1.6.3",

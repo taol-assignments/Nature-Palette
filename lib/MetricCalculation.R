@@ -18,24 +18,22 @@ for (i in 1 : nrow(spectra)) {
         full_name <- paste(file, '.Master.Transmission', sep = '')
         val = row[[file]]
 
-        if (val <= 0 && val >= - 2) {
-            warnings <- c(errors, list(
-            file = full_name,
-            wavelen = row$wl,
-            value = val
-            ))
+        if (val >= - 2 && val <= 0) {
+            warnings <- append(warnings, list(list(
+                file = full_name,
+                wavelen = row$wl,
+                value = val)))
         } else if (val < - 2) {
-            errors <- c(errors, list(
-            file = full_name,
-            wavelen = row$wl,
-            value = val
-            ))
+            errors <- append(errors, list(list(
+                file = full_name,
+                wavelen = row$wl,
+                value = val)))
         }
     }
 }
 
-write(toJSON(list(warnings=warnings, errors=errors)), stderr())
-
-objective_metrics <- summary(spectra)
-
-cat(toJSON(objective_metrics))
+cat(toJSON(list(
+metrics = summary(spectra),
+warnings = warnings,
+errors = errors
+)))
