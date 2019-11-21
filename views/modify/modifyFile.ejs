@@ -9,7 +9,8 @@
 
 <div class="container" style="width:70%; margin: auto">
     <br>
-    <form action="/upload" class="was-validated" method="post" enctype="multipart/form-data">
+    <form action="/modify/upload" class="was-validated" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="submissionId" value="<%=submissionId %>">
         <div class="form-row">
             <label>
                 Metadata File
@@ -37,9 +38,15 @@
         </div>
         <button type="submit" class="btn btn-dark">Submit</button>
     </form>
-<%=submissionId %>
 </div>
+
 <%- include ../components/scripts.ejs %>
+<script>
+    $(".custom-file-input").on("change", function () {
+        let fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+</script>
 
 </body>
 </html>
