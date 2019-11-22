@@ -26,36 +26,42 @@
         <button type="submit" class="btn btn-primary">Submit</button>
 
     </form>-->
-    <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Submission №</th>
-            <th scope="col">Submission ID</th>
-            <th scope="col">Submitter</th>
-            <th scope="col">E-mail</th>
-            <th scope="col">Data from</th>
-        </tr>
-        </thead>
-        <tbody>
-        <% if (submissions && submissions.length > 0) {
-            for (let i = 0; i < submissions.length; i++) {
-        %>
+    <% if (submissions && submissions.length > 0) { %>
+        <table class="table table-striped">
+            <thead>
             <tr>
-                <th scope="row"><%=i %></th>
-                <td><%=submissions[i]._id %></td>
-                <td><%=(submissions[i].firstName + " " + submissions[i].lastName) %></td>
-                <td><%=submissions[i].email %></td>
-                <td><%=submissions[i].dataFrom %></td>
-                <td><a href="/modify/<%=submissions[i]._id%>" type="button" class="btn btn-success">Modify</a></td>
+                <th scope="col">№</th>
+                <th scope="col">Submission ID</th>
+                <th scope="col">Submitter</th>
+                <th scope="col">E-mail</th>
+                <th scope="col">Data from</th>
+                <th scope="col">Date</th>
+                <th scope="col">Edit</th>
             </tr>
-        <% }
-        } else { %>
-            <div class="alert alert-success" role="alert">
-                <p>No submission yet. Please go to homepage and start your submission!</p>
-            </div>
-        <% } %>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <% for (let i = 0; i < submissions.length; i++) { %>
+                <tr>
+                    <td scope="row"><%= i + 1 %></td>
+                    <td><%= submissions[i]._id %></td>
+                    <td><%= (submissions[i].firstName + " " + submissions[i].lastName) %></td>
+                    <td><%= submissions[i].email %></td>
+                    <td><%= submissions[i].dataFrom %></td>
+                    <td><%= moment(submissions[i].createdAt).format('YYYY-MM-DD') %></td>
+                    <td>
+                        <a role="button" class="btn btn-success" href="/modify/<%= submissions[i]._id %>">
+                            Edit
+                        </a>
+                    </td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <div class="alert alert-success" role="alert">
+            <p>No submission yet. Please go to homepage and start your submission!</p>
+        </div>
+    <% } %>
 </div>
 
 

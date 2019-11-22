@@ -4,7 +4,7 @@ const User = require('../models/User');
 const Token = require('../models/Token');
 
 exports.tokenParser = async function (req, res, next) {
-    req.user = null;
+    res.locals.user = req.user = null;
 
     if (!req.cookies || !req.cookies.token) {
         return next();
@@ -13,7 +13,7 @@ exports.tokenParser = async function (req, res, next) {
     let token = await Token.validate(req.cookies.token);
 
     if (token !== null) {
-        req.user = await User.findById(token.user).populate('userGroup');
+        res.locals.user = req.user = await User.findById(token.user).populate('userGroup');
     }
 
     next();

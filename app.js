@@ -12,7 +12,6 @@ require('mongoose').connect(
     });
 
 const auth = require('./middlewares/auth');
-const render = require('./middlewares/render');
 
 const indexRouter = require('./routes/index');
 const uploadRouter = require('./routes/upload');
@@ -27,6 +26,7 @@ const modifyRouter = require('./routes/modify');
 let app = express();
 
 app.locals.moment = require('moment');
+app.locals.config = config;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,8 +39,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(auth.tokenParser);
-
-app.use(render);
 
 app.use('/', indexRouter);
 app.use('/upload', uploadRouter);
