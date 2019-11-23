@@ -2,23 +2,21 @@ const util = require('util');
 const path = require('path');
 const rename = util.promisify(require('fs').rename);
 const unlink = util.promisify(require('fs').unlink);
-const readFile = util.promisify(require('fs').readFile);
-const glob = util.promisify(require('glob'));
 const rimraf = require('rimraf');
 const express = require('express');
 const multer = require('multer');
 const mkdirp = util.promisify(require('mkdirp'));
-const AdmZip = require('adm-zip');
 const sendMail = require('../lib/sendEmail');
 const auth = require('../middlewares/auth');
 const helpers = require('../lib/helpers');
+const upload = require('../lib/upload');
 const Submission = require('../models/Submission');
 const Metadata = require('../models/Metadata');
 const Metric = require('../models/Metric');
 
 let router = express.Router();
 
-router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, res, next) {
+router.post('/', auth.ensureUserPrivilege('uploadFiles'), function (req, res, next) {
     req.submission = new Submission({
         user: req.user._id
     });
@@ -57,89 +55,34 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
     }
     let baseDir = __dirname + "/../uploads/" + req.submission._id + "/";
 
-    function cleanUploadedFiles() {
-        rimraf(baseDir, err => {
-            if (err) {
-                console.error(err);
-            }
-        })
-    }
-
-    let extractTo = baseDir + "extractedZip";
     let rawFile = req.files.rawFile[0];
     let metadataFile = req.files.metadata[0];
 
-    let metadata;
+    let result;
 
     try {
-        await Promise.all([
-            new Promise((resolve, reject) => {
-                new AdmZip(rawFile.path).extractAllToAsync(extractTo, true, err => {
-                    if (err) {
-                        err = new Error(err);
-                        err.code = 400;
-                        reject(err);
-                    } else {
-                        resolve();
-                    }
-                });
-            }),
-            util.promisify(readFile)(metadataFile.path).then(buf => {
-                metadata = Metadata.parse(req.submission, buf.toString());
-            })
-        ]);
+        result = await upload.validateMetadataAndExtractZip({
+            isNewUpload: true,
+            submission: req.submission,
+            zipPath: rawFile.path,
+            metadataFile: metadataFile
+        });
     } catch (e) {
-        console.error(e);
-        cleanUploadedFiles();
-
-        if (!(e instanceof Error)) {
-            e = new Error(e);
-        }
-
-        if (typeof e.code !== 'number') {
-            e.code = 500;
-        }
-
-        return res.status(e.code).render('upload/result', {
+        res.status(e.code || 500).render('upload/result', {
             err: e
-        }).end();
-    }
+        });
 
-    let files = await glob(extractTo + '/**/*.Master.Transmission');
-
-    let duplicates = helpers.findDuplicates(files.map(f => {
-        return path.basename(f);
-    }));
-    if (duplicates.length > 0) {
-        return res.status(400).render('upload/result', {
-            err: new Error("Duplicated raw files: " + duplicates.join(','))
-        }).end();
+        res.end();
+        return;
     }
 
     const rawFileDir = baseDir + "RawFiles/";
 
-    try {
-        await Promise.all([
-            mkdirp(rawFileDir).then(() => {
-                return Promise.all(files.map(f => {
-                    return rename(f, rawFileDir + path.basename(f))
-                }))
-            }),
-            unlink(rawFile.path),
-            rename(metadataFile.path, baseDir + metadataFile.originalname)
-        ]);
-    } catch (e) {
-        console.error(e);
-        cleanUploadedFiles();
-
-        return res.status(500).render('upload/result', {
-            err: new Error("Internal server error.")
-        });
-    }
-
     res.status(201).render('upload/result', {
         err: null
     });
+
+    res.end();
 
     function makeErrorTable(rows) {
         return helpers.makeHtmlTable([
@@ -151,7 +94,7 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
 
     Promise.all([
         req.submission.save(),
-        Promise.all(metadata.map(row => row.save())),
+        Promise.all(result.metadata.map(row => row.save())),
         Metric.fromRawFile(req.submission, rawFileDir).then(result => {
             let html = `Dear ${req.submission.firstName} ${req.submission.lastName},\n\n`;
 
@@ -181,7 +124,7 @@ router.post('/', /* auth.ensureUserPrivilege('uploadFiles'), */ function (req, r
             html = html.replace(/\n/g, '<br>');
 
             let args = {
-                to: 'taol@mun.ca',
+                to: req.submission.email,
                 from: 'test@example.com',
                 subject: 'Nature\'s Palette: Your raw file uploading result.',
                 content: [{

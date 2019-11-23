@@ -1,12 +1,12 @@
 const _ = require('lodash');
-const peg = require('pegjs');
+const path = require('path');
 const helpers = require('../lib/helpers');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 let Metadata;
 
-let metadataSchema = new mongoose.Schema({
+let schemaDef = {
     Submission: {
         type: ObjectId,
         ref: 'Submission',
@@ -160,82 +160,100 @@ let metadataSchema = new mongoose.Schema({
     verbatimElevation: {
         type: Number,
         require: false
+    },
+    RawFileStatus: {
+        type: String,
+        enum: ['Missing', 'Processing', 'Ok', 'Warn', 'Error'],
+        require: true,
+        default: 'Processing'
     }
-});
+};
 
-const fieldParser = peg.generate(
-    "column = 'Comments' /" +
-    "'FileName' /" +
-    "'LightAngle1' /" +
-    "'LightAngle2' /" +
-    "'Patch' /" +
-    "'ProbeAngle1' /" +
-    "'ProbeAngle2' /" +
-    "'Replicate' /" +
-    "'UniqueID' /" +
-    "'catalogueNumber' /" +
-    "'class' /" +
-    "'collectionCode' /" +
-    "'country' /" +
-    "'decimalLatitude' /" +
-    "'decimalLongitude' /" +
-    "'eventDate' /" +
-    "'family' /" +
-    "'genus' /" +
-    "'geodeticDatum' /" +
-    "'infraspecificEpithet' /" +
-    "'institutionCode' /" +
-    "'lifeStage' /" +
-    "'locality' /" +
-    "'measurementDeterminedDate' /" +
-    "'order' /" +
-    "'sex' /" +
-    "'specificEpithet' /" +
-    "'verbatimElevation'\n" +
-    "start = first:column others:(' '* ',' ' '* c:column {return c;})+ {" +
-    "   return [first].concat(others);" +
-    "}", {
-        allowedStartRules: ['start']
+let metadataSchema = new mongoose.Schema(schemaDef);
+
+const csvColumns = [
+    'Comments',
+    'FileName',
+    'LightAngle1',
+    'LightAngle2',
+    'Patch',
+    'ProbeAngle1',
+    'ProbeAngle2',
+    'Replicate',
+    'UniqueID',
+    'catalogueNumber',
+    'class',
+    'collectionCode',
+    'country',
+    'decimalLatitude',
+    'decimalLongitude',
+    'eventDate',
+    'family',
+    'genus',
+    'geodeticDatum',
+    'infraspecificEpithet',
+    'institutionCode',
+    'lifeStage',
+    'locality',
+    'measurementDeterminedDate',
+    'order',
+    'sex',
+    'specificEpithet',
+    'verbatimElevation',
+];
+
+function parseColumns(dataForm, cols) {
+    cols = cols.split(',');
+
+    let duplicates = helpers.findDuplicates(cols);
+
+    if (duplicates.length > 0) {
+        throw new Error("Duplicated metadata rows: " + duplicates.join(', '));
+    }
+
+    let s = new Set(cols);
+    csvColumns.forEach(key => {
+        let requireField = schemaDef[key].require;
+
+        if (typeof requireField === 'boolean') {
+            if (requireField && !s.has(key)) {
+                throw new Error(`Missing required metadata field: "${key}"`);
+            }
+        }
     });
 
-const rowParser = peg.generate(
-    "elem = (!('\\n' / '\\r\\n')+ [^,])* {return text();}\n" +
-    "row = first:elem others:(',' e:elem{return e})+ {" +
-    "   return [first].concat(others)" +
-    "}\n" +
-    "rows = first:row others:(('\\n' / '\\r\\n')+ r:row {return r;})* ('\\n' / '\\r\\n')* {" +
-    "   return [first].concat(others);" +
-    "}", {
-        allowedStartRules: ['rows']
-    });
+    if (dataForm === 'Field' && !s.has('UniqueID')) {
+        throw new Error('Missing required column in field metadata file: UniqueID.');
+    }
+
+    if (dataForm === 'Museum') {
+        for (let k of ['institutionCode', 'catalogueNumber']) {
+            if (!s.has(k)) {
+                throw new Error(`Missing required column in museum metadata file: ${k}.`);
+            }
+        }
+    }
+
+    for (let col of cols) {
+        if (csvColumns.indexOf(col) === -1) {
+            throw new Error(`Invalid metadata field name: ${col}`);
+        }
+    }
+
+    return cols;
+}
 
 metadataSchema.statics.parse = function (submission, csv) {
-    let end = csv.indexOf('\r\n');
-    let offset = 2;
-
-    if (end === -1) {
-        end = csv.indexOf('\n');
-        offset = 1;
-    }
-
     try {
-        if (end === -1) {
-            throw new Error('Empty metadata file.');
-        }
+        csv = csv.split(/\r?\n/);
+        let cols = parseColumns(submission.dataFrom, csv[0]);
 
-        let cols = fieldParser.parse(csv.substr(0, end));
+        let content = csv.slice(1).map(row => row.split(','));
+        let skip = content.filter(row => row.length < cols.length).map((row, i) => i);
 
-        let duplicates = helpers.findDuplicates(cols);
-        if (duplicates.length > 0) {
-            throw new Error("Found duplicated columns: " + duplicates.join(', '));
-        }
-
-        let content = rowParser.parse(csv.substr(end + offset));
-
-        return content.map(row => {
-            if (row.length !== cols.length) {
-                throw new Error(`Number of columns mismatched in row ${content.indexOf(row) + 1}.` +
-                    `Expect ${cols.length} columns per row.`);
+        let metadatas =  _.compact(content.map((row, i) => {
+            if (skip.indexOf(i) !== -1) {
+                return null
             }
 
             let doc = {
@@ -243,13 +261,31 @@ metadataSchema.statics.parse = function (submission, csv) {
             };
 
             for (let i in row) {
+                if (i >= cols.length) {
+                    break;
+                }
+
                 if (row[i]) {
                     doc[cols[i]] = row[i];
                 }
             }
 
-            return new Metadata(doc);
-        });
+            doc = new Metadata(doc);
+
+            let err = doc.validateSync();
+            if (err) {
+                throw err;
+            }
+
+            return doc;
+        }));
+
+        let fileDuplicates = helpers.findDuplicates(metadatas.map(m => m.FileName));
+        if (fileDuplicates.length > 0) {
+            throw new Error("Duplicated FileName in metadata file: " + fileDuplicates.join(', '));
+        }
+
+        return metadatas;
     } catch (e) {
         e.message = "Failed to parse metadata file: " + e.message;
         e.code = 400;
@@ -342,6 +378,29 @@ metadataSchema.statics.findSubmissions = async function (query) {
     }, {
         $unwind: '$user'
     }]);
+};
+
+metadataSchema.statics.setRawFileStatus = function (files, metadata) {
+    files = files.map(f => path.basename(f));
+    let filesInMetadata = metadata.map(m => m.FileName + '.Master.Transmission');
+
+    let intersection = _.intersection(files, filesInMetadata);
+    let notInMetadata = _.difference(files, filesInMetadata);
+    let missing = _.difference(filesInMetadata, files);
+
+    for (let m of metadata) {
+        if (missing.indexOf(m.FileName) !== -1) {
+            m.RawFileStatus = 'Missing';
+        } else if (intersection.indexOf(m.FileName) !== -1) {
+            m.RawFileStatus = 'Processing';
+        }
+    }
+
+    return {
+        intersection,
+        notInMetadata,
+        missing
+    };
 };
 
 module.exports = Metadata = mongoose.model('Metadata', metadataSchema);
