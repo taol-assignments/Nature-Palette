@@ -24,7 +24,8 @@ exports.ensureUserPrivilege = function (...privileges) {
         if (!req.user) {
             res.status(403).json({
                 msg: "Access denied."
-            }).end();
+            });
+            res.end();
 
             return;
         }
@@ -33,7 +34,8 @@ exports.ensureUserPrivilege = function (...privileges) {
             if (!req.user.userGroup[p]) {
                 res.status(403).json({
                     msg: "Access denied."
-                }).end();
+                })
+                res.end();
 
                 return;
             }
