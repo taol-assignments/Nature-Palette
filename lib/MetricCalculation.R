@@ -20,20 +20,35 @@ for (i in 1 : nrow(spectra)) {
 
         if (val >= - 2 && val <= 0) {
             warnings <- append(warnings, list(list(
-                file = full_name,
-                wavelen = row$wl,
-                value = val)))
+            file = full_name,
+            wavelen = row$wl,
+            value = val)))
         } else if (val < - 2) {
             errors <- append(errors, list(list(
-                file = full_name,
-                wavelen = row$wl,
-                value = val)))
+            file = full_name,
+            wavelen = row$wl,
+            value = val)))
         }
     }
 }
 
+fullName = vector(mode = "list")
+for (i in 1 : length(files)) {
+    fullName[i] = paste(files[i], '.Master.Transmission', sep = '')
+}
+
+corrupt <- vector(mode = "list")
+
+for (file in list.files(filePath, pattern = '.Master.Transmission')) {
+    if (! (file %in% fullName)) {
+        corrupt <- c(corrupt, file)
+    }
+}
+
 cat(toJSON(list(
+files = files,
 metrics = summary(spectra),
 warnings = warnings,
-errors = errors
+errors = errors,
+corrupt = corrupt
 )))

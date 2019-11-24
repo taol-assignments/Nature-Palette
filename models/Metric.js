@@ -109,11 +109,11 @@ let metricSchema = new mongoose.Schema({
 
 let Metric;
 
-metricSchema.statics.fromRawFile = async function (submission, dir) {
+metricSchema.statics.fromRawFile = async function (submission) {
     let childProcess = spawn(config.rLanguageExecutable, [
         '--vanilla',
         __dirname + '/../lib/MetricCalculation.R',
-        dir
+        __dirname + '/../uploads/' + submission._id + '/Unprocessed'
     ]);
 
     let result = JSON.parse(await new Promise((resolve, reject) => {
@@ -144,7 +144,8 @@ metricSchema.statics.fromRawFile = async function (submission, dir) {
     let metrics = [];
     for (let i = 0; i < result.metrics.H5.length; i++) {
         let m = {
-            Submission: submission
+            Submission: submission,
+            Filename: result.files[i]
         };
         for (let k in result.metrics) {
             m[k] = result.metrics[k][i];
@@ -154,9 +155,8 @@ metricSchema.statics.fromRawFile = async function (submission, dir) {
     }
 
     return {
+        ...result,
         metrics: metrics,
-        warnings: result.warnings,
-        errors: result.errors
     };
 };
 
