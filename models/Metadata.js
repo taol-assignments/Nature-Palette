@@ -22,14 +22,14 @@ let schemaDef = {
     },
     LightAngle1: {
         type: Number,
-        min: [-90, "LightAngle1 should not less than -90."],
-        max: [90, "LightAngle1 should not larger then -90."],
+        min: [-90, "LightAngle1 should not be less than -90."],
+        max: [90, "LightAngle1 should not be larger then -90."],
         require: true,
     },
     LightAngle2: {
         type: Number,
-        min: [-90, "LightAngle2 should not less than -90."],
-        max: [90, "LightAngle2 should not larger then -90."],
+        min: [-90, "LightAngle2 should not be less than -90."],
+        max: [90, "LightAngle2 should not be larger then -90."],
         require: true
     },
     Patch: {
@@ -39,19 +39,19 @@ let schemaDef = {
     },
     ProbeAngle1: {
         type: Number,
-        min: [-90, "ProbeAngle1 should not less than -90."],
-        max: [90, "ProbeAngle1 should not larger then -90."],
+        min: [-90, "ProbeAngle1 should not be less than -90."],
+        max: [90, "ProbeAngle1 should not be larger then -90."],
         require: true
     },
     ProbeAngle2: {
         type: Number,
-        min: [-90, "ProbeAngle2 should not less than -90."],
-        max: [90, "ProbeAngle2 should not larger then -90."],
+        min: [-90, "ProbeAngle2 should not be less than -90."],
+        max: [90, "ProbeAngle2 should not be larger then -90."],
         require: true
     },
     Replicate: {
         type: Number,
-        min: [1, "Replicate should not less than 1."],
+        min: [1, "Replicate should not be less than 1."],
         require: true
     },
     UniqueID: {
@@ -86,14 +86,14 @@ let schemaDef = {
     },
     decimalLatitude: {
         type: Number,
-        min: [-90, "decimalLatitude should not less than -90."],
-        max: [90, "decimalLatitude should not larger then -90."],
+        min: [-90, "decimalLatitude should not be less than -90."],
+        max: [90, "decimalLatitude should not be larger then -90."],
         require: false
     },
     decimalLongitude: {
         type: Number,
-        min: [-180, "decimalLongitude should not less than -180."],
-        max: [180, "decimalLongitude should not larger then -180."],
+        min: [-180, "decimalLongitude should not be less than -180."],
+        max: [180, "decimalLongitude should not be larger then -180."],
         require: false
     },
     eventDate: {

@@ -10,28 +10,52 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-
+                <li class="nav-item active">
+                    <a class="nav-link" href="/search/searchPanel.html">Search</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addTerm/addPanel.html">Add Search Term</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/modify/modifyPanel.html">Modify Data</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/upload/instruction.html">Upload Data</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
                 <% if (user) {%>
-                    <li class="nav-item">
-                        <a id="logout-btn" class="nav-link" href="#">Logout</a>
-                    </li>
-                    <script defer>
-                        document.addEventListener('DOMContentLoaded', function () {
-                            document.getElementById('logout-btn').addEventListener('click', async e => {
-                                e.preventDefault();
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Hello, <%= user.email %>!
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="/about.html">About</a>
+                                    <a class="dropdown-item" href="/help.html">Help</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a id ="logout-btn" class="dropdown-item" href="#">Logout</a>
+                                    <script defer>
+                                        document.addEventListener('DOMContentLoaded', function () {
+                                            document.getElementById('logout-btn').addEventListener('click', async e => {
+                                                e.preventDefault();
 
-                                await fetch('/token.html', {
-                                    method: 'DELETE'
-                                });
+                                                await fetch('/token.html', {
+                                                    method: 'DELETE'
+                                                });
 
-                                if (window.location.href.pathname === '/') {
-                                    window.location.reload();
-                                } else {
-                                    window.location.href = '/';
-                                }
-                            });
-                        })
-                    </script>
+                                                if (window.location.href.pathname === '/') {
+                                                    window.location.reload();
+                                                } else {
+                                                    window.location.href = '/';
+                                                }
+                                            });
+                                        })
+                                    </script>
+                                </div>
+                            </div>
+                        </li>
+
                 <%} else { %>
                     <li class="nav-item">
                         <a class="nav-link" href="/token.html">Login</a>
@@ -39,22 +63,6 @@
 
                     <li class="nav-item">
                         <a class="nav-link" href="/register.html">Register</a>
-                    </li>
-                <% } %>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/addTerm/addPanel.html">Add Search Term</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/about.html">About</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="/help.html">Help</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <% if (user) {%>
-                    <li class="nav-item">
-                        <a class="nav-link">Hello! <%= user.email %></a>
                     </li>
                 <% } %>
             </ul>
