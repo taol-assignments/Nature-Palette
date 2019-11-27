@@ -1,6 +1,7 @@
 # Nature's Palette
 
 An open-access digital repository of spectral data with advanced search functions. It allows researchers to easily supply their spectral data without going through onerous data processing which is a major barrier to data sharing.
+![Image of Yaktocat](./public/images/home-page.png)
 
 ## Getting Started
 
