@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<%- include('../components/header.ejs', {title:'Home - Nature\'s Palette'}) %>
+<%- include('../components/header.ejs', {title:'Submission List - Nature\'s Palette'}) %>
 
 <body class="bg-light">
 
@@ -36,7 +36,7 @@
                 <th scope="col">E-mail</th>
                 <th scope="col">Data from</th>
                 <th scope="col">Date</th>
-                <th scope="col">Edit</th>
+                <th scope="col">Modify</th>
             </tr>
             </thead>
             <tbody>
@@ -50,7 +50,7 @@
                     <td><%= moment(submissions[i].createdAt).format('YYYY-MM-DD') %></td>
                     <td>
                         <a role="button" class="btn btn-success" href="/modify/<%= submissions[i]._id %>">
-                            Edit
+                            Modify
                         </a>
                     </td>
                 </tr>
