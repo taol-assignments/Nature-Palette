@@ -50,7 +50,7 @@ router.post('/', auth.ensureUserPrivilege('uploadFiles'), function (req, res, ne
 
     try {
         result = await upload.validateMetadataAndExtractZip({
-            isNewUpload: true,
+            isModify: false,
             submission: req.submission,
             zipPath: req.files.rawFile[0].path,
             metadataFile: req.files.metadata[0]
@@ -73,7 +73,7 @@ router.post('/', auth.ensureUserPrivilege('uploadFiles'), function (req, res, ne
     Promise.all([
         req.submission.save(),
         Promise.all(result.metadata.map(row => row.save())),
-        upload.processRawFiles(req.submission)
+        upload.processRawFiles(req.submission, result.notMatched)
     ]).catch(e => {
         console.error(e);
     })

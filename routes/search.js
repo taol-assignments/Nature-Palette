@@ -46,9 +46,7 @@ router.get('/download.html', searchTermsMiddleware, async function (req, res, ne
 
                 for (let row of rows) {
                     for (let k of Object.keys(row)) {
-                        if (k !== "Submission" &&
-                            k!== "__v"  &&
-                            k !== "_id" &&
+                        if (["Submission", "__v", "_id", "RawFileStatus"].indexOf(k) === -1 &&
                             columns.indexOf(k) === -1)
                         {
                             columns.push(k);

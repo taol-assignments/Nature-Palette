@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('../components/header.ejs', {
+title:'Upload ' + (err ? 'Failed' : 'Success' ) + ' - Nature\'s Palette'
+}) %>
+
+<body class="bg-light">
+
+<%- include('../components/navbar.ejs', {user: user}) %>
+
+<div class="container">
+    <div class="card" style="text-align: center">
+        <div class="jumbotron" style="padding-left: 15%;padding-right: 15%">
+            <% if (err) { %>
+                <p class="lead">
+                    An error happened during modification:
+                </p>
+                <p class="lead">
+                    <%- err.message %>
+                </p>
+            <% } else { %>
+                <p class="lead">
+                    Congratulations! You have uploaded the files successfully! Here is your modify result.
+                </p>
+                <p>
+                    You will be notified if we find corrupted files.
+                </p>
+                <p class="lead"></p>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Action</th>
+                        <th scope="col">New Filename</th>
+                        <th scope="col">Old Filename</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% for (let k in result) {
+                        let type = k === 'add' ? 'Add' :
+                                k === 'replace' ? 'Replace' :
+                                        'Delete'
+                            for (let doc of result[k]) {
+                    %>
+                        <tr>
+                            <td><%= type %></td>
+                            <td><%= doc.NewFileName || 'N/A' %></td>
+                            <td><%= doc.FileName || 'N/A' %></td>
+                        </tr>
+                    <% }} %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include ../components/scripts.ejs %>
+</body>
+
+</html>

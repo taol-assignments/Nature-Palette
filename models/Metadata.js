@@ -18,7 +18,8 @@ let schemaDef = {
     },
     FileName: {
         type: String,
-        require: true
+        require: true,
+        minlength: 1
     },
     LightAngle1: {
         type: Number,
@@ -202,7 +203,7 @@ const csvColumns = [
     'verbatimElevation',
 ];
 
-function parseColumns(dataForm, cols) {
+function parseColumns(dataForm, cols, isModify) {
     cols = cols.split(',');
 
     let duplicates = helpers.findDuplicates(cols);
@@ -235,7 +236,7 @@ function parseColumns(dataForm, cols) {
     }
 
     for (let col of cols) {
-        if (csvColumns.indexOf(col) === -1) {
+        if (!(isModify && col === 'NewFileName') && csvColumns.indexOf(col) === -1) {
             throw new Error(`Invalid metadata field name: ${col}`);
         }
     }
@@ -243,16 +244,16 @@ function parseColumns(dataForm, cols) {
     return cols;
 }
 
-metadataSchema.statics.parse = function (submission, csv) {
+metadataSchema.statics.parse = function (submission, csv, isModify) {
     try {
         csv = csv.split(/\r?\n/);
-        let cols = parseColumns(submission.dataFrom, csv[0]);
+        let cols = parseColumns(submission.dataFrom, csv[0], isModify);
 
         let content = csv.slice(1).map(row => row.split(','));
-        let skip = content.filter(row => row.length < cols.length).map((row, i) => i);
+        let skip = content.filter(row => row.length < cols.length);
 
         let metadatas =  _.compact(content.map((row, i) => {
-            if (skip.indexOf(i) !== -1) {
+            if (skip.indexOf(row) !== -1) {
                 return null
             }
 
@@ -267,25 +268,58 @@ metadataSchema.statics.parse = function (submission, csv) {
 
                 if (row[i]) {
                     doc[cols[i]] = row[i];
+
+                    if (cols[i] === 'NewFileName' && !isModify) {
+                        delete doc[cols[i]];
+                    }
                 }
             }
 
-            doc = new Metadata(doc);
+            if (!isModify) {
+                doc = new Metadata(doc);
 
-            let err = doc.validateSync();
-            if (err) {
-                throw err;
+                let err = doc.validateSync();
+                if (err) {
+                    throw err;
+                }
             }
 
             return doc;
         }));
 
-        let fileDuplicates = helpers.findDuplicates(metadatas.map(m => m.FileName));
+        let fileDuplicates = helpers.findDuplicates(_.compact(metadatas.map(m => m.FileName)));
+
         if (fileDuplicates.length > 0) {
             throw new Error("Duplicated FileName in metadata file: " + fileDuplicates.join(', '));
         }
 
-        return metadatas;
+        if (isModify) {
+            let result = {
+                add: [],
+                delete: [],
+                replace: []
+            };
+
+            for (let row of metadatas) {
+                if (row.NewFileName) {
+                    if (row.FileName) {
+                        result.replace.push(row);
+                    } else {
+                        result.add.push(row);
+                    }
+                } else {
+                    if (row.FileName) {
+                        result.delete.push(row);
+                    } else {
+                        throw new Error('Fields "NewFileName" and "FileName" cannot be null in same row.');
+                    }
+                }
+            }
+
+            return result;
+        } else {
+            return metadatas;
+        }
     } catch (e) {
         e.message = "Failed to parse metadata file: " + e.message;
         e.code = 400;
@@ -315,6 +349,8 @@ const embargoSelector = [{
 }];
 
 metadataSchema.statics.search = async function (query) {
+    query.RawFileStatus = 'Ok';
+
     return Metadata.aggregate([{
         $match: query
     }, ...embargoSelector, {
@@ -382,22 +418,24 @@ metadataSchema.statics.findSubmissions = async function (query) {
 
 metadataSchema.statics.setRawFileStatus = function (files, metadata) {
     files = files.map(f => path.basename(f));
-    let filesInMetadata = metadata.map(m => m.FileName + '.Master.Transmission');
+    let filesInMetadata = metadata.map(m => (m.NewFileName || m.FileName) + '.Master.Transmission');
 
-    let intersection = _.intersection(files, filesInMetadata);
+    let valid = _.intersection(files, filesInMetadata);
     let notInMetadata = _.difference(files, filesInMetadata);
     let missing = _.difference(filesInMetadata, files);
 
     for (let m of metadata) {
-        if (missing.indexOf(m.FileName) !== -1) {
+        let filename = m.NewFileName || m.FileName;
+
+        if (missing.indexOf(filename) !== -1) {
             m.RawFileStatus = 'Missing';
-        } else if (intersection.indexOf(m.FileName) !== -1) {
+        } else if (valid.indexOf(filename) !== -1) {
             m.RawFileStatus = 'Processing';
         }
     }
 
     return {
-        intersection,
+        valid,
         notInMetadata,
         missing
     };
