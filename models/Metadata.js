@@ -252,7 +252,7 @@ metadataSchema.statics.parse = function (submission, csv, isModify) {
         let content = csv.slice(1).map(row => row.split(','));
         let skip = content.filter(row => row.length < cols.length);
 
-        let metadatas =  _.compact(content.map((row, i) => {
+        let metadatas = _.compact(content.map((row, i) => {
             if (skip.indexOf(row) !== -1) {
                 return null
             }
@@ -348,11 +348,29 @@ const embargoSelector = [{
     }
 }];
 
-metadataSchema.statics.search = async function (query) {
-    query.RawFileStatus = 'Ok';
+function parseRequestQuery(query) {
+    let selector = {
+        ...query
+    };
 
+    for (let k in selector) {
+        if (selector.hasOwnProperty(k)) {
+            selector[k] = {
+                $in: selector[k].toString().split(/\s+[Oo][Rr]\s+/)
+            };
+        }
+    }
+
+    selector.RawFileStatus = {
+        $in: ['Ok', 'Warn']
+    };
+
+    return selector;
+}
+
+metadataSchema.statics.search = async function (query) {
     return Metadata.aggregate([{
-        $match: query
+        $match: parseRequestQuery(query)
     }, ...embargoSelector, {
         $group: {
             _id: {
@@ -371,7 +389,7 @@ metadataSchema.statics.search = async function (query) {
 
 metadataSchema.statics.findPublicRows = async function (query) {
     return Metadata.aggregate([{
-        $match: query
+        $match: parseRequestQuery(query)
     }, ...embargoSelector, {
         $set: {
             "Submission": "$Submission._id"
@@ -381,7 +399,7 @@ metadataSchema.statics.findPublicRows = async function (query) {
 
 metadataSchema.statics.findRawFiles = async function (query) {
     return Metadata.aggregate([{
-        $match: query
+        $match: parseRequestQuery(query)
     }, ...embargoSelector, {
         $project: {
             _id: "$Submission._id",
@@ -392,7 +410,7 @@ metadataSchema.statics.findRawFiles = async function (query) {
 
 metadataSchema.statics.findSubmissions = async function (query) {
     return Metadata.aggregate([{
-        $match: query
+        $match: parseRequestQuery(query)
     }, ...embargoSelector, {
         $replaceWith: '$Submission'
     }, {
