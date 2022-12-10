@@ -13,7 +13,7 @@
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "escape-html": "^1.0.3",
-    "express": "~4.16.1",
+    "express": "~4.17.3",
     "glob": "^7.1.6",
     "http-errors": "~1.6.3",
     "lodash": "^4.17.15",
